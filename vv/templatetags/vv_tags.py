@@ -14,5 +14,6 @@ def is_installed(vvapp):
     return False
 
 @register.simple_tag
-def debug():
-    return DEBUG 
+def isdebug():
+    print "Debug *************************"+str(DEBUG)
+    return DEBUG
