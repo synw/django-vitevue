@@ -7,7 +7,7 @@ and [Page.js](https://github.com/visionmedia/page.js) for client-side routing.
 
 To make a module using Vuejs frontend structure do a `vues` folder in your module template folder. It should contain this:
 
-   ```bash
+   ```
 components.js
 computed.js
 data.js
@@ -19,7 +19,7 @@ Put your different vuejs parts at the appropriate places
 
 Put a `{% block vues %}` in your base template 
 
-Routing: make a `routes.js` file into your templates folder and fill it with page.js routes if needed: ex:
+Routing: make a `routes.js` file into your module template folder and fill it with page.js routes if needed: ex:
 
    ```javasccript
 page('/someurl/', function(ctx, next) { app.doSomething() } );
