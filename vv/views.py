@@ -14,7 +14,9 @@ class IndexView(TemplateView):
             parts = {
                 "routes": appname+"/routes.js",
                 "data": appname+"/vues/data.js",
-                "methods": appname+"/vues/methods.js"
+                "methods": appname+"/vues/methods.js",
+                "computed": appname+"/vues/computed.js",
+                "components": appname+"/vues/components.js"
             }
             apps[appname] = parts
         context['apps'] = apps 

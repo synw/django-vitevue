@@ -1,5 +1,9 @@
 {% load vv_tags %}
 
+{% for appname, parts in apps.items %}
+	{% include parts.components %}
+{% endfor %}
+	
 const app = new Vue({
 	el: '#app',
 	data: {
@@ -11,7 +15,12 @@ const app = new Vue({
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
-	}
+	},
+	computed: {
+		{% for appname, parts in apps.items %}
+			{% include parts.computed %}
+		{% endfor %}
+	},
 });
 
 {% for appname, parts in apps.items %}
