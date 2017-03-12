@@ -15,7 +15,9 @@ methods.js
 templates.html
    ```
    
-Put your different vuejs parts at the appropriate places 
+Put your different vuejs parts at the appropriate places
+
+Put a `{% block vues %}` in your base template 
 
 Routing: make a `routes.js` file into your templates folder and fill it with page.js routes if needed: ex:
 
