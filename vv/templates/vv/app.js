@@ -26,7 +26,7 @@ const app = new Vue({
 			promise.get(resturl).then(function(error, data, xhr) {
 			    if (error) {console.log('Error ' + xhr.status);return;}    
 			    var parsed_data = JSON.parse(data);
-			    action(data);
+			    action(parsed_data);
 			});
 		}
 	},
