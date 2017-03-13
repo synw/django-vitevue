@@ -15,6 +15,13 @@ const app = new Vue({
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
+		flushContent: function() {
+			app.content = "";
+			{% if "vvcatalog"|is_installed %}
+				this.products = [];
+				this.categories = [];
+			{% endif %}
+		}
 	},
 	computed: {
 		{% for appname, parts in apps.items %}
