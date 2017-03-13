@@ -21,6 +21,13 @@ const app = new Vue({
 				this.products = [];
 				this.categories = [];
 			{% endif %}
+		},
+		loadData: function(resturl, action) {
+			promise.get(resturl).then(function(error, data, xhr) {
+			    if (error) {console.log('Error ' + xhr.status);return;}    
+			    var parsed_data = JSON.parse(data);
+			    action(data);
+			});
 		}
 	},
 	computed: {
