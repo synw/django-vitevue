@@ -37,3 +37,4 @@ Your frontend parts will be merged into the main app
 
 - [Vvpages](https://github.com/synw/django-vvpages): pages management
 - [VVcontact](https://github.com/synw/django-vvcontact): contact form
+- [VVcatalog](https://github.com/synw/django-vvcatalog): products catalog with cart
