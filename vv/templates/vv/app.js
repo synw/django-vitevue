@@ -29,7 +29,7 @@ const app = new Vue({
 				} else if (t === "object") {
 					app[this.active[i]] = {}
 				}
-				this.active.pop(v);
+				delete(this.active[i]);
 			}
 		},
 		activate: function(args) {
