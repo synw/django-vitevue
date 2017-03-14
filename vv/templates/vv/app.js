@@ -6,11 +6,13 @@
 	
 const app = new Vue({
 	el: '#app',
-	data: {
-		{% for appname, parts in apps.items %}
-			{% include parts.data %}
-		{% endfor %}
-		active: []
+    data () {
+        return {
+			{% for appname, parts in apps.items %}
+				{% include parts.data %}
+			{% endfor %}
+			active: []
+        }
 	},
 	methods: {
 		{% for appname, parts in apps.items %}
@@ -20,31 +22,31 @@ const app = new Vue({
 			//console.log("FLUSH");
 			for (i=0;i<this.active.length;i++) {
 				v = app[this.active[i]];
-				console.log("Preserve: "+this.active[i]+" / "+preserve);
+				//console.log("Preserve: "+this.active[i]+" / "+preserve);
 				if (this.active[i] != preserve) {
-					console.log("flushing "+this.active[i])
+					//console.log("flushing "+this.active[i])
 					var t = typeOf(v);
 					if (t === "string") {
-						console.log(this.active[i]+ " -> Flushing string");
+						//console.log(this.active[i]+ " -> Flushing string");
 						app[this.active[i]] = ""
 					} else if (t === "array") {
-						console.log(this.active[i]+ " -> Flushing array");
+						//console.log(this.active[i]+ " -> Flushing array");
 						app[this.active[i]] = [];
 					} else if (t === "object") {
-						console.log(this.active[i]+ " -> Flushing object");
+						//console.log(this.active[i]+ " -> Flushing object");
 						app[this.active[i]] = {}
 					}
 					delete(this.active[i]);
 				} else {
-					console.log("Preserving "+this.active[i])
+					//console.log("Preserving "+this.active[i])
 				}
 			}
-			console.log("After flush active: "+this.active);
+			//console.log("After flush active: "+this.active);
 		},
 		activate: function(args) {
-			console.log("ACTIVATE "+args);
+			//console.log("ACTIVATE "+args);
 			this.active = args;
-			console.log("After activate active: "+this.active);
+			//console.log("After activate active: "+this.active);
 		},
 		loadData: function(resturl, action) {
 			promise.get(resturl).then(function(error, data, xhr) {
@@ -59,6 +61,12 @@ const app = new Vue({
 			{% include parts.computed %}
 		{% endfor %}
 	},
+	{% if "vvphotos"|is_installed %}
+		components: {
+	        'Slider': window[ 'vue-easy-slider' ].Slider,
+	        'SliderItem': window[ 'vue-easy-slider' ].SliderItem
+	      },
+	{% endif %}
 });
 
 {% for appname, parts in apps.items %}
