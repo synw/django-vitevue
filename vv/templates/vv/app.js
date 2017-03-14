@@ -16,11 +16,11 @@ const app = new Vue({
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
-		flushContent: function() {
-			console.log("FLUSH");
+		flush: function() {
+			//console.log("FLUSH");
 			for (i=0;i<this.active.length;i++) {
 				v = app[this.active[i]];
-				console.log("flushing "+this.active[i])
+				//console.log("flushing "+this.active[i])
 				var t = typeOf(v);
 				if (t === "string") {
 					app[this.active[i]] = ""
@@ -33,7 +33,7 @@ const app = new Vue({
 			}
 		},
 		activate: function(args) {
-			console.log("ACTIVATE "+args);
+			//console.log("ACTIVATE "+args);
 			this.active = args;
 		},
 		loadData: function(resturl, action) {
