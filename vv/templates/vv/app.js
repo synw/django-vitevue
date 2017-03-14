@@ -10,17 +10,31 @@ const app = new Vue({
 		{% for appname, parts in apps.items %}
 			{% include parts.data %}
 		{% endfor %}
+		active: []
 	},
 	methods: {
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
 		flushContent: function() {
-			app.content = "";
-			{% if "vvcatalog"|is_installed %}
-				this.products = [];
-				this.categories = [];
-			{% endif %}
+			console.log("FLUSH");
+			for (i=0;i<this.active.length;i++) {
+				v = app[this.active[i]];
+				console.log("flushing "+this.active[i])
+				var t = typeOf(v);
+				if (t === "string") {
+					app[this.active[i]] = ""
+				} else if (t === "array") {
+					app[this.active[i]] = [];
+				} else if (t === "object") {
+					app[this.active[i]] = {}
+				}
+				this.active.pop(v);
+			}
+		},
+		activate: function(args) {
+			console.log("ACTIVATE "+args);
+			this.active = args;
 		},
 		loadData: function(resturl, action) {
 			promise.get(resturl).then(function(error, data, xhr) {
@@ -41,3 +55,7 @@ const app = new Vue({
 	{% include parts.routes %}
 {% endfor %}
 page()
+
+function typeOf (obj) {
+  return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
+}
