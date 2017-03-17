@@ -2,7 +2,7 @@
 
 from django import template
 from django.conf import settings
-from vv.conf import DEBUG
+from vv.conf import DEBUG, VV_APPS
 
 
 register = template.Library()
@@ -15,5 +15,18 @@ def is_installed(vvapp):
 
 @register.simple_tag
 def isdebug():
-    print "Debug *************************"+str(DEBUG)
     return DEBUG
+
+@register.simple_tag
+def getVvapps():        
+    apps = {}
+    for appname in VV_APPS:
+        parts = {
+            "routes": appname+"/routes.js",
+            "data": appname+"/vues/data.js",
+            "methods": appname+"/vues/methods.js",
+            "computed": appname+"/vues/computed.js",
+            "components": appname+"/vues/components.js"
+        }
+        apps[appname] = parts
+    return apps 
