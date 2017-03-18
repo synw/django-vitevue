@@ -3,7 +3,10 @@
 {% for appname, parts in apps.items %}
 	{% include parts.components %}
 {% endfor %}
-	
+
+//var debug = {% if isdebug == True %}true{% else %}false{% endif %};
+var debug = true;
+
 const app = new Vue({
 	el: '#app',
     data () {
@@ -19,34 +22,43 @@ const app = new Vue({
 			{% include parts.methods %}
 		{% endfor %}
 		flush: function(preserve) {
-			//console.log("FLUSH");
+			if (debug === true) {console.log("FLUSH")};
 			for (i=0;i<this.active.length;i++) {
 				v = app[this.active[i]];
-				//console.log("Preserve: "+this.active[i]+" / "+preserve);
+				if (debug === true) {console.log("Preserve: "+this.active[i]+" / "+preserve)};
 				if (this.active[i] != preserve) {
-					//console.log("flushing "+this.active[i])
+					if (debug === true) { console.log("flushing "+this.active[i])};
 					var t = typeOf(v);
 					if (t === "string") {
-						//console.log(this.active[i]+ " -> Flushing string");
+						if (debug === true) { console.log(this.active[i]+ " -> Flushing string")};
 						app[this.active[i]] = ""
 					} else if (t === "array") {
-						//console.log(this.active[i]+ " -> Flushing array");
+						if (debug === true) { console.log(this.active[i]+ " -> Flushing array")};
 						app[this.active[i]] = [];
 					} else if (t === "object") {
-						//console.log(this.active[i]+ " -> Flushing object");
+						if (debug === true) { console.log(this.active[i]+ " -> Flushing object")};
 						app[this.active[i]] = {}
 					}
 					delete(this.active[i]);
 				} else {
-					//console.log("Preserving "+this.active[i])
+					if (debug === true) { console.log("Preserving "+this.active[i])};
 				}
 			}
-			//console.log("After flush active: "+this.active);
+			if (debug === true) { console.log("After flush active: "+this.active)};
 		},
 		activate: function(args) {
-			//console.log("ACTIVATE "+args);
+			if (debug === true) { console.log("ACTIVATE "+args)};
 			this.active = args;
-			//console.log("After activate active: "+this.active);
+			if (debug === true) { console.log("After activate active: "+this.active)};
+		},
+		pushActivate: function(args) {
+			if (debug === true) { console.log("ACTIVATE "+args)};
+			i = 0;
+			while (i<args.length) {
+				this.active.push(args[i]);
+				i++
+			}
+			if (debug === true) { console.log("After activate active: "+this.active)};
 		},
 		loadData: function(resturl, action) {
 			promise.get(resturl).then(function(error, data, xhr) {
@@ -77,3 +89,6 @@ page()
 function typeOf (obj) {
   return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
 }
+{% if "vvcatalog"|is_installed %}
+app.InitCatalog();
+{% endif %}
