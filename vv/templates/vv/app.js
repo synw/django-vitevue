@@ -29,6 +29,7 @@ const app = new Vue({
 				if (this.active[i] != preserve) {
 					if (debug === true) { console.log("flushing "+this.active[i])};
 					var t = typeOf(v);
+					if (debug === true) { console.log("TYPE "+t);};
 					if (t === "string") {
 						if (debug === true) { console.log(this.active[i]+ " -> Flushing string")};
 						app[this.active[i]] = ""
@@ -45,6 +46,12 @@ const app = new Vue({
 				}
 			}
 			if (debug === true) { console.log("After flush active: "+this.active)};
+		},
+		isActive: function(item) {
+			if (this.active.indexOf(item) > -1) {
+				return true
+			}
+			return false
 		},
 		activate: function(args) {
 			if (debug === true) { console.log("ACTIVATE "+args)};
@@ -66,7 +73,11 @@ const app = new Vue({
 			    var parsed_data = JSON.parse(data);
 			    action(parsed_data);
 			});
-		}
+		},
+		loadForm: function(resturl, id, title) {
+			this.loadChunk(resturl, title);
+			init_form(id, resturl);
+		},
 	},
 	computed: {
 		{% for appname, parts in apps.items %}
@@ -81,6 +92,16 @@ const app = new Vue({
 	{% endif %}
 });
 
+var forms = {};
+{% for appname, parts in apps.items %}
+	var fms = {% include parts.forms %};
+	console.log("FMS {{ appname }} "+fms[i]);
+	for (key in fms) {
+		forms[key] = fms[key];
+	}
+{% endfor %}
+if (debug === true) { console.log("FORMS "+JSON.stringify(forms))};
+
 {% for appname, parts in apps.items %}
 	{% include parts.routes %}
 {% endfor %}
@@ -92,3 +113,61 @@ function typeOf (obj) {
 {% if "vvcatalog"|is_installed %}
 app.InitCatalog();
 {% endif %}
+
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+          var cookies = document.cookie.split(';');
+    for (var i = 0; i < cookies.length; i++) {
+         var cookie = jQuery.trim(cookies[i]);
+       // Does this cookie string begin with the name we want?
+       if (cookie.substring(0, name.length + 1) == (name + '=')) {
+         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+           break;
+       }
+    }
+}
+return cookieValue;
+}
+function csrfSafeMethod(method) {
+	// these HTTP methods do not require CSRF protection
+	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+function post_form(frm, url, appv) {
+	$.ajax({
+	      type: 'POST',
+	      url: url,
+	      data: frm.serialize(),
+	      dataType : 'html',
+	      success: function (response) {
+	    	  if (debug === true) {console.log(response)};
+	          appv = response;
+	      },
+	      error: function(xhr, textStatus, error) {
+	      	console.log("Error:");
+	          console.log(xhr.statusText);
+			    console.log(textStatus);
+			    console.log(error);
+	      }
+	  });
+}
+var csrftoken = getCookie('csrftoken');
+$.ajaxSetup({
+ crossDomain: false,
+ beforeSend: function(xhr, settings) {
+     if (!csrfSafeMethod(settings.type)) {
+         xhr.setRequestHeader("X-CSRFToken", csrftoken);
+     }
+ }
+});
+function init_form(key, url) {
+	console.log("FORM "+key+" "+url);
+	var frm = $(key);
+	frm.submit(function (ev) {
+		console.log("POSTING form "+key+" "+url);
+		ev.preventDefault();
+		ev.stopImmediatePropagation();
+	  	post_form(frm, url);
+	  	return false;
+	});
+}
