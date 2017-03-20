@@ -12,6 +12,7 @@ components.js
 computed.js
 data.js
 methods.js
+extra.js
 templates.html
    ```
    
