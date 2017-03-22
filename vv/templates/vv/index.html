@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load vv_tags %}
 
+{% block vvapps %}
+	{% for appname, parts in apps.items %}
+		{% include parts.template %}
+	{% endfor %}
+{% endblock %}
+
 {% block vues %}
 	{% getVvapps as apps %}
 	{% include "vv/app.js" %}
-{% endblock %}
-
-{% block vvapps %}
-	{% if "vvcatalog"|is_installed %}
-		{% include "vvcatalog/vues/templates.html" %}
-	{% endif %}
 {% endblock %}
