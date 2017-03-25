@@ -5,7 +5,7 @@ from django.conf import settings
 
 DEBUG = getattr(settings, 'VV_DEBUG', False)
 
-default_apps = ["vvpages", "vvcontact", "vvcatalog", "vvallauth"]
+default_apps = ["vvpages", "vvcontact", "vvcatalog", "vvallauth", "vvinstant"]
 VV_APPS = []
 for app in default_apps:
     if app in settings.INSTALLED_APPS:
