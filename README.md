@@ -3,6 +3,18 @@
 Manage a Vue.js frontend from several Django modules. Uses [Vue.js](http://vuejs.org/) for data binding
 and [Page.js](https://github.com/visionmedia/page.js) for client-side routing.
 
+## Install
+
+Clone and add `vv` to INSTALLED_APPS
+
+Include urls at the bottom of urls.py:
+
+  ```python
+urlpatterns.append(url(r'^',include('vv.urls')))
+  ```
+  
+Add a `{% block vues %}{% endblock %}` to your base template
+
 ## Usage
 
 To make a module using Vuejs frontend structure do a `vues` folder in your module template folder. It should contain this:
