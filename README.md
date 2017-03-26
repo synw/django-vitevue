@@ -12,8 +12,14 @@ Include urls at the bottom of urls.py:
   ```python
 urlpatterns.append(url(r'^',include('vv.urls')))
   ```
-  
+
 Add a `{% block vues %}{% endblock %}` to your base template
+
+Templates: `<header>`:
+
+  ```html
+<script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+  ```
 
 ## Usage
 
