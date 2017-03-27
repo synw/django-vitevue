@@ -17,9 +17,6 @@ const app = new Vue({
         }
 	},
 	methods: {
-		{% for appname, parts in apps.items %}
-			{% include parts.methods %}
-		{% endfor %}
 		flush: function(preserve) {
 			if (debug === true) {console.log("FLUSH")};
 			for (i=0;i<this.active.length;i++) {
@@ -76,22 +73,15 @@ const app = new Vue({
 			    action(parsed_data);
 			});
 		},
-		loadForm: function(resturl, id, title) {
-			this.loadChunk(resturl, title);
-			init_form(id, resturl);
-		},
+		{% for appname, parts in apps.items %}
+			{% include parts.methods %}
+		{% endfor %}
 	},
 	computed: {
 		{% for appname, parts in apps.items %}
 			{% include parts.computed %}
 		{% endfor %}
 	},
-	{% if "vvphotos"|is_installed %}
-		components: {
-	        'Slider': window[ 'vue-easy-slider' ].Slider,
-	        'SliderItem': window[ 'vue-easy-slider' ].SliderItem
-	      },
-	{% endif %}
 });
 
 {% for appname, parts in apps.items %}
