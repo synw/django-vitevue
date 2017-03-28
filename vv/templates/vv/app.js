@@ -73,6 +73,12 @@ const app = new Vue({
 			    action(parsed_data);
 			});
 		},
+		loadRawData: function(resturl, action) {
+			promise.get(resturl).then(function(error, data, xhr) {
+			    if (error) {console.log('Error ' + xhr.status);return;}    
+			    action(data);
+			});
+		},
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
@@ -125,6 +131,7 @@ $.ajaxSetup({
         }
     }
 });
+
 {% for appname, parts in apps.items %}
 	{% include parts.extra %}
 {% endfor %}

@@ -5,8 +5,14 @@
 	{% if "vvcatalog"|is_installed %}
 		{% include "vvcatalog/vues/templates.html" %}
 	{% endif %}
-	{% if "vvmaps"|is_installed %}
-		{% include "vvmaps/vues/templates.html" %}
+	{% if "vvphotos"|is_installed %}
+		{% include "vvphotos/vues/templates.html" %}
+	{% endif %}
+	{% if "vvcontact"|is_installed %}
+		{% include "vvcontact/vues/templates.html" %}
+	{% endif %}
+	{% if "vvinstant"|is_installed %}
+		{% include "vvinstant/vues/templates.html" %}
 	{% endif %}
 {% endblock %}
 
