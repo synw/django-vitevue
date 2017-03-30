@@ -2,6 +2,9 @@
 {% load vv_tags %}
 
 {% block vvapps %}
+	{% if "vvinstant"|is_installed %}
+		{% include "vvinstant/vues/templates.html" %}
+	{% endif %}
 	{% if "vvcatalog"|is_installed %}
 		{% include "vvcatalog/vues/templates.html" %}
 	{% endif %}
@@ -10,9 +13,6 @@
 	{% endif %}
 	{% if "vvcontact"|is_installed %}
 		{% include "vvcontact/vues/templates.html" %}
-	{% endif %}
-	{% if "vvinstant"|is_installed %}
-		{% include "vvinstant/vues/templates.html" %}
 	{% endif %}
 {% endblock %}
 

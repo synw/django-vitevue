@@ -14,6 +14,18 @@ const app = new Vue({
 				{% include parts.data %}
 			{% endfor %}
 			active: [],
+			showSidebar: false,
+			mainCol: {
+				"col-xs-12": true,
+				'col-sm-8': false,
+				'col-sm-pull-4': false
+			},
+			sideCol: {
+				"col-xs-12": true,
+				'col-sm-4': false,
+				'col-sm-push-8': false,
+				"hidden": true
+			},
         }
 	},
 	methods: {
@@ -78,6 +90,35 @@ const app = new Vue({
 			    if (error) {console.log('Error ' + xhr.status);return;}    
 			    action(data);
 			});
+		},
+		toggleSidebar: function() {
+			if ( this.showSidebar === false ) {
+				this.mainCol = {
+					"col-xs-12": true,
+					'col-sm-8': true,
+					'col-sm-pull-4': true
+				},
+				this.sideCol = {
+					"col-xs-12": true,
+					'col-sm-4': true,
+					'col-sm-push-8': true,
+					"hidden": false
+				}
+				this.showSidebar = true;
+			} else {
+				this.mainCol = {
+					"col-xs-12": true,
+					'col-sm-8': false,
+					'col-sm-pull-4': false
+				},
+				this.sideCol = {
+					"col-xs-12": true,
+					'col-sm-4': false,
+					'col-sm-push-8': false,
+					"hidden": true
+				}
+				this.showSidebar = false;
+			}
 		},
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
