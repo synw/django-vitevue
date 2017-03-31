@@ -5,6 +5,9 @@
 	{% if "vvinstant"|is_installed %}
 		{% include "vvinstant/vues/templates.html" %}
 	{% endif %}
+	{% if "vvpages"|is_installed %}
+		{% include "vvpages/vues/templates.html" %}
+	{% endif %}
 	{% if "vvcatalog"|is_installed %}
 		{% include "vvcatalog/vues/templates.html" %}
 	{% endif %}
