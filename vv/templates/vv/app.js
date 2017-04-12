@@ -1,9 +1,5 @@
 {% load vv_tags %}
 
-{% for appname, parts in apps.items %}
-	{% include parts.components %}
-{% endfor %}
-
 var debug = {% if isdebug == True %}true{% else %}false{% endif %};
 
 const app = new Vue({

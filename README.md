@@ -26,10 +26,9 @@ Templates: `<header>`:
 To make a module using Vuejs frontend structure do a `vues` folder in your module template folder. It should contain this:
 
    ```
-components.js
-computed.js
 data.js
 methods.js
+computed.js
 extra.js
 templates.html
    ```
