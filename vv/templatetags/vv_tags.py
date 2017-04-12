@@ -26,7 +26,6 @@ def getVvapps():
             "data": appname+"/vues/data.js",
             "methods": appname+"/vues/methods.js",
             "computed": appname+"/vues/computed.js",
-            "components": appname+"/vues/components.js",
             "extra": appname+"/vues/extra.js",
         }
         apps[appname] = parts
