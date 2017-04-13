@@ -131,9 +131,14 @@ const app = new Vue({
 });
 
 {% for appname, parts in apps.items %}
-	{% include parts.routes %}
+	{% if appname != "vvpages" %}
+		{% include parts.routes %}
+	{% endif %}
 {% endfor %}
-page()
+{% if "vvpages"|is_installed %}
+	{% include "vvpages/routes.js" %}
+{% endif %}
+page();
 
 function typeOf (obj) {
   return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
