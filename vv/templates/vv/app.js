@@ -116,6 +116,9 @@ const app = new Vue({
 				this.showSidebar = false;
 			}
 		},
+		str: function(el) {
+			return JSON.stringify(el, null, 2)
+		},
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
 		{% endfor %}
