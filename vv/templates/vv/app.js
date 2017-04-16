@@ -1,6 +1,6 @@
 {% load vv_tags %}
 
-var debug = {% if isdebug == True %}true{% else %}false{% endif %};
+var vvDebug = {% isdebug %};
 
 const app = new Vue({
 	el: '#app',
@@ -26,33 +26,33 @@ const app = new Vue({
 	},
 	methods: {
 		flush: function(preserve) {
-			if (debug === true) {console.log("FLUSH")};
+			if (vvDebug === true) {console.log("FLUSH")};
 			for (i=0;i<this.active.length;i++) {
 				v = app[this.active[i]];
-				if (debug === true) {console.log("Preserve: "+this.active[i]+" / "+preserve)};
+				if (vvDebug === true) {console.log("Preserve: "+this.active[i]+" / "+preserve)};
 				if (this.active[i] != preserve) {
-					if (debug === true) { console.log("flushing "+this.active[i])};
+					if (vvDebug === true) { console.log("flushing "+this.active[i])};
 					var t = typeOf(v);
-					if (debug === true) { console.log("TYPE "+t);};
+					if (vvDebug === true) { console.log("TYPE "+t);};
 					if (t === "string") {
-						if (debug === true) { console.log(this.active[i]+ " -> Flushing string")};
+						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing string")};
 						app[this.active[i]] = ""
 					} else if (t === "array") {
-						if (debug === true) { console.log(this.active[i]+ " -> Flushing array")};
+						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing array")};
 						app[this.active[i]] = [];
 					} else if (t === "object") {
-						if (debug === true) { console.log(this.active[i]+ " -> Flushing object")};
+						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing object")};
 						app[this.active[i]] = {}
 					} else if (t === "boolean") {
-						if (debug === true) { console.log(this.active[i]+ " -> Flushing boolean")};
+						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing boolean")};
 						app[this.active[i]] = false
 					}
 					delete(this.active[i]);
 				} else {
-					if (debug === true) { console.log("Preserving "+this.active[i])};
+					if (vvDebug === true) { console.log("Preserving "+this.active[i])};
 				}
 			}
-			if (debug === true) { console.log("After flush active: "+this.active)};
+			if (vvDebug === true) { console.log("After flush active: "+this.active)};
 		},
 		isActive: function(item) {
 			if (this.active.indexOf(item) > -1) {
@@ -61,18 +61,18 @@ const app = new Vue({
 			return false
 		},
 		activate: function(args) {
-			if (debug === true) { console.log("ACTIVATE "+args)};
+			if (vvDebug === true) { console.log("ACTIVATE "+args)};
 			this.active = args;
-			if (debug === true) { console.log("After activate active: "+this.active)};
+			if (vvDebug === true) { console.log("After activate active: "+this.active)};
 		},
 		pushActivate: function(args) {
-			if (debug === true) { console.log("ACTIVATE "+args)};
+			if (vvDebug === true) { console.log("ACTIVATE "+args)};
 			i = 0;
 			while (i<args.length) {
 				this.active.push(args[i]);
 				i++
 			}
-			if (debug === true) { console.log("After activate active: "+this.active)};
+			if (vvDebug === true) { console.log("After activate active: "+this.active)};
 		},
 		loadData: function(resturl, action) {
 			promise.get(resturl).then(function(error, data, xhr) {

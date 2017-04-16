@@ -2,7 +2,7 @@
 
 from django import template
 from django.conf import settings
-from vv.conf import DEBUG, VV_APPS
+from vv.conf import VV_APPS
 
 
 register = template.Library()
@@ -15,7 +15,10 @@ def is_installed(vvapp):
 
 @register.simple_tag
 def isdebug():
-    return DEBUG
+    debug = getattr(settings, 'VV_DEBUG', False)
+    if debug is True:
+        return "true"
+    return "false"
 
 @register.simple_tag
 def getVvapps():        
