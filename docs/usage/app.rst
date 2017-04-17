@@ -35,7 +35,7 @@ Your frontend parts will be merged into the main app
 Client side routing
 ^^^^^^^^^^^^^^^^^^^
 
-Routing: make a ``routes.js`` file into your module template folder and fill it with page.js routes if needed: ex:
+Optional routing: make a ``routes.js`` file into your module template folder and fill it with page.js routes if needed: ex:
 
 .. highlight:: javascript
 
