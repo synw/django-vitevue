@@ -1,7 +1,8 @@
 # Django Vite Vue
 
-Manage a Vue.js frontend from several Django modules. Uses [Vue.js](http://vuejs.org/) for data binding
-and [Page.js](https://github.com/visionmedia/page.js) for client-side routing.
+Manage a Vue.js frontend from several Django modules. Uses [Vue.js](http://vuejs.org/) for data binding,
+ [Page.js](https://github.com/visionmedia/page.js) for client-side routing and [Axios](https://github.com/mzabriskie/axios)
+ for fetching data.
 
 ## Install
 
