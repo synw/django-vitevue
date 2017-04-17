@@ -38,3 +38,5 @@ Load the libraries in html header:
 
    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
+   <!-- routing is optional : -->
+   <script type="text/javascript" src="{% static 'js/page.js' %}"></script> 
