@@ -1,19 +1,21 @@
 Manage a frontend from a module
 ===============================
 
-To make a module using Vuejs frontend structure do a `vues` folder in your module's template folder. It should contain this:
+To make a module using Vuejs frontend structure your module's template folder should contain this:
 
 .. highlight:: python
 
 :: 
    
-   data.js
-   methods.js
-   computed.js
-   extra.js
-   templates.html
+   vues/data.js
+   vues/methods.js
+   vues/computed.js
+   vues/extra.js
+   routes.js
    
-Put your different vuejs parts at the appropriate places
+Put your different vuejs parts at the appropriate places. 
+
+Note: `extra.js` is just extra global javascript, the rest are Vue parts to be assembled.
 
 Templates
 ^^^^^^^^^
