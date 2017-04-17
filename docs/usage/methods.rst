@@ -27,29 +27,17 @@ To preserve an element from beeing flushed you can pass it to the function: ``fl
 Get and post data
 ^^^^^^^^^^^^^^^^^
 
-``loadData(url, action)``: loads json data and process actions on it
+``loadData(url, action)``: loads data and process actions on it
 
 :: 
 
    function action(data) {
-      # data is parsed json
       console.log(data)
    }
 
    this.loadData("{% url 'myurl' %}", action);
    
-``loadRawData(url, action)``: loads raw data like html and process actions on it
 
-:: 
-
-   function action(data) {
-      # data is raw html
-      app.myvar = data;
-   }
-
-   this.loadRawData("{% url 'myurl' %}", action);
-   
-   
 ``postForm(url, data, action, error, csrfmiddlewaretoken)``: post a form
 
 Note: the ``csrfmiddlewaretoken`` is optional an will be set from the session cookie if not provided
@@ -64,6 +52,8 @@ Note: the ``csrfmiddlewaretoken`` is optional an will be set from the session co
    }
    # formdata is a json object
    this.postForm(url, formdata, action, error, myform.csrfmiddlewaretoken)
+   
+``str(json_obj)``: shortcurt for console.log and JSON.stringify
 
 
  

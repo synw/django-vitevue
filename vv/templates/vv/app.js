@@ -76,14 +76,6 @@ const app = new Vue({
 		},
 		loadData: function(resturl, action, error) {
 			axios.get(resturl).then(function (response) {
-				var parsed_data = JSON.parse(response.data);
-			    action(parsed_data);
-			}).catch(function (error) {
-				console.log(error);
-			});
-		},
-		loadRawData: function(resturl, action, error) {
-			axios.get(resturl).then(function (response) {
 			    action(response.data);
 			}).catch(function (error) {
 				console.log(error);
