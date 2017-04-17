@@ -121,16 +121,19 @@ const app = new Vue({
 		str: function(el) {
 			return JSON.stringify(el, null, 2)
 		},
-		postForm: function(url, data, action, error) {
-			var ax = axios.create({headers: {'X-CSRFToken': csrftoken}});
+		postForm: function(url, data, action, error, token) {
+			if (!token) {
+				token = csrftoken
+			}
+			var ax = axios.create({headers: {'X-CSRFToken': token}});
 			ax({
 				method: 'post',
 				url: url,
 				data: data,
 			}).then(function (response) {
 				action(response)
-			}).catch(function (error) {
-				error(error);
+			}).catch(function (err) {
+				error(err);
 			});
 		},
 		{% for appname, parts in apps.items %}
@@ -162,34 +165,23 @@ app.InitCatalog();
 {% endif %}
 
 function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-	    for (var i = 0; i < cookies.length; i++) {
-	         var cookie = cookies[i].trim();
-	       if (cookie.substring(0, name.length + 1) == (name + '=')) {
-	         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-	           break;
-	       }
-	    }
+	var cookieValue = null;
+	if (document.cookie && document.cookie != '') {
+		var cookies = document.cookie.split(';');
+		for (var i = 0; i < cookies.length; i++) {
+			var cookie = cookies[i].trim();
+			if (cookie.substring(0, name.length + 1) == (name + '=')) {
+				cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+				break;
+			}
+		}
 	}
-    return cookieValue;
+	return cookieValue;
 }
 var csrftoken = getCookie('csrftoken');
 function csrfSafeMethod(method) {
 	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}/*
-$.ajaxSetup({
-	scriptCharset: "utf-8",
-	contentType: "application/json; charset=utf-8",
-    crossDomain: false,
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type)) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
-*/
+}
 {% for appname, parts in apps.items %}
 	{% include parts.extra %}
 {% endfor %}
