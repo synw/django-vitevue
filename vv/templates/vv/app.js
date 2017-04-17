@@ -74,17 +74,19 @@ const app = new Vue({
 			}
 			if (vvDebug === true) { console.log("After activate active: "+this.active)};
 		},
-		loadData: function(resturl, action) {
-			promise.get(resturl).then(function(error, data, xhr) {
-			    if (error) {console.log('Error ' + xhr.status);return;}    
-			    var parsed_data = JSON.parse(data);
+		loadData: function(resturl, action, error) {
+			axios.get(resturl).then(function (response) {
+				var parsed_data = JSON.parse(response.data);
 			    action(parsed_data);
+			}).catch(function (error) {
+				console.log(error);
 			});
 		},
-		loadRawData: function(resturl, action) {
-			promise.get(resturl).then(function(error, data, xhr) {
-			    if (error) {console.log('Error ' + xhr.status);return;}    
-			    action(data);
+		loadRawData: function(resturl, action, error) {
+			axios.get(resturl).then(function (response) {
+			    action(response.data);
+			}).catch(function (error) {
+				console.log(error);
 			});
 		},
 		toggleSidebar: function() {
@@ -118,6 +120,18 @@ const app = new Vue({
 		},
 		str: function(el) {
 			return JSON.stringify(el, null, 2)
+		},
+		postForm: function(url, data, action, error) {
+			var ax = axios.create({headers: {'X-CSRFToken': csrftoken}});
+			ax({
+				method: 'post',
+				url: url,
+				data: data,
+			}).then(function (response) {
+				action(response)
+			}).catch(function (error) {
+				error(error);
+			});
 		},
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
@@ -153,7 +167,6 @@ function getCookie(name) {
         var cookies = document.cookie.split(';');
 	    for (var i = 0; i < cookies.length; i++) {
 	         var cookie = cookies[i].trim();
-	       // Does this cookie string begin with the name we want?
 	       if (cookie.substring(0, name.length + 1) == (name + '=')) {
 	         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
 	           break;
@@ -165,7 +178,7 @@ function getCookie(name) {
 var csrftoken = getCookie('csrftoken');
 function csrfSafeMethod(method) {
 	return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+}/*
 $.ajaxSetup({
 	scriptCharset: "utf-8",
 	contentType: "application/json; charset=utf-8",
@@ -176,7 +189,7 @@ $.ajaxSetup({
         }
     }
 });
-
+*/
 {% for appname, parts in apps.items %}
 	{% include parts.extra %}
 {% endfor %}

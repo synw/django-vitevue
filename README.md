@@ -19,6 +19,7 @@ Templates: `<header>`:
 
   ```html
 <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
   ```
 
 ## Usage
