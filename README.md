@@ -10,7 +10,7 @@ For install and usage instructions read the [documentation](http://vite-vue.read
 
 Fetch content and display it:
 
-In `yourmodules_template_folder/vue/data.js`:
+In `yourmodule_template_folder/vue/data.js`:
 
   ```javascript
 content: "",
@@ -22,7 +22,7 @@ In a template:
 <div v-html="content" v-show="isActive('content')"></div>
   ```
 
-In `yourmodules_template_folder/vue/methods.js`:
+In `yourmodule_template_folder/vue/methods.js`:
 
   ```javascript
 loadContent: function(url) { 
@@ -39,7 +39,7 @@ loadContent: function(url) {
   
 Declare your app in `settings.py` so that your frontend parts will be assembled: `VV_APPS = ["myapp"]`
   
-Optionaly set a client side route in `yourmodules_template_folder/routes.js`:
+Optionaly set a client side route in `yourmodule_template_folder/routes.js`:
 
   ```javascript
 page('/mycontent/', function(ctx, next) { app.loadContent('{% url 'myurl' %}') });
