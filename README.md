@@ -42,7 +42,7 @@ Declare your app in `settings.py` so that your frontend parts will be assembled:
 Optionaly set a client side route in `yourmodule_template_folder/routes.js`:
 
   ```javascript
-page('/mycontent/', function(ctx, next) { app.loadContent('{% url 'myurl' %}') });
+page('/mycontent/', function(ctx, next) { app.loadContent("{% url 'myurl' %}") });
   ```
 
 The `loadContent` method will then be triggered by the link `<a href="/mycontent/">load content</a>`
