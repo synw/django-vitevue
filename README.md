@@ -46,3 +46,9 @@ page('/mycontent/', function(ctx, next) { app.loadContent("{% url 'myurl' %}") }
   ```
 
 The `loadContent` method will then be triggered by the link `<a href="/mycontent/">load content</a>`
+
+### What is that name?
+
+In french language "vue" means view, "vite" means quick. The popular expression "Vite vu" means something quickly
+done or evaluated. As this module is based on Vue.js and helps making the things done pretty quick it sounded appropriate
+to call it Vite Vue. 
