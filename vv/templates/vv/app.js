@@ -46,13 +46,16 @@ const app = new Vue({
 					} else if (t === "boolean") {
 						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing boolean")};
 						app[this.active[i]] = false
+					} else if (t === "number") {
+						if (vvDebug === true) { console.log(this.active[i]+ " -> Flushing number")};
+						app[this.active[i]] = 0
 					}
 					delete(this.active[i]);
 				} else {
 					if (vvDebug === true) { console.log("Preserving "+this.active[i])};
 				}
 			}
-			if (vvDebug === true) { console.log("After flush active: "+this.active)};
+			if (vvDebug === true) { console.log("After flush active: "+this.active+"\n ***********\n") };
 		},
 		isActive: function(item) {
 			if (this.active.indexOf(item) > -1) {
@@ -63,16 +66,7 @@ const app = new Vue({
 		activate: function(args) {
 			if (vvDebug === true) { console.log("ACTIVATE "+args)};
 			this.active = args;
-			if (vvDebug === true) { console.log("After activate active: "+this.active)};
-		},
-		pushActivate: function(args) {
-			if (vvDebug === true) { console.log("ACTIVATE "+args)};
-			i = 0;
-			while (i<args.length) {
-				this.active.push(args[i]);
-				i++
-			}
-			if (vvDebug === true) { console.log("After activate active: "+this.active)};
+			if (vvDebug === true) { console.log("After activate active: "+this.active+"\n ***********\n")};
 		},
 		loadData: function(resturl, action, error) {
 			axios.get(resturl).then(function (response) {

@@ -12,8 +12,6 @@ To preserve an element from beeing flushed you can pass it to the function: ``fl
 
 ``activate(["item1", "item2"])``: set active the given items
 
-``pushActivate(["item1", "item2"])``: add the given items to active set
-
 ``isActive("item")``: return true or false, usefull for v-show
 
 .. highlight:: django
