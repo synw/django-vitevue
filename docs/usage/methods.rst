@@ -50,8 +50,11 @@ Note: the ``csrfmiddlewaretoken`` is optional an will be set from the session co
    }
    # formdata is a json object
    this.postForm(url, formdata, action, error, myform.csrfmiddlewaretoken)
+
+Pass the form token
+if posting a Django form, otherwise use the session cookie
    
-``str(json_obj)``: shortcurt for console.log and JSON.stringify
+``str(json_obj)``: shortcurt for pretty JSON.stringify
 
 
  
