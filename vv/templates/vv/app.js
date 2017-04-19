@@ -1,7 +1,5 @@
 {% load vv_tags %}
-
 var vvDebug = {% isdebug %};
-
 const app = new Vue({
 	el: '#app',
     data () {
@@ -132,7 +130,6 @@ const app = new Vue({
 		{% endfor %}
 	},
 });
-
 {% for appname, parts in apps.items %}
 	{% if appname != "vvpages" %}
 		{% include parts.routes %}
@@ -142,14 +139,9 @@ const app = new Vue({
 	{% include "vvpages/routes.js" %}
 {% endif %}
 page();
-
 function typeOf (obj) {
   return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
 }
-{% if "vvcatalog"|is_installed %}
-app.InitCatalog();
-{% endif %}
-
 function getCookie(name) {
 	var cookieValue = null;
 	if (document.cookie && document.cookie != '') {
