@@ -25,7 +25,7 @@ In a template:
 In `your_module/templates/vue/methods.js`:
 
   ```javascript
-loadContent: function(url) { 
+loadMyContent: function(url) { 
 	function action(data) {
 		// update UI
 		app.content = data.somejsonkey;
@@ -34,6 +34,17 @@ loadContent: function(url) {
 		app.activate(["content"]);
 	}
 	this.loadData(url, action);
+},
+postMyForm: function() {
+	function error(err) {
+		console.log(err)
+	}
+	function action(response) {
+		console.log(response.data)
+	}
+	var form = document.getElementById("myform");
+	var data = this.serializeForm(form);
+	this.postForm(url, data, action, error)
 },
   ```
   
