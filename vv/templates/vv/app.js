@@ -68,6 +68,13 @@ const app = new Vue({
 			}
 			if (vvDebug === true) { console.log("After activate active: "+this.active+"\n ***********\n")};
 		},
+		deactivate: function(args) {
+			if (vvDebug === true) { console.log("DEACTIVATE "+args)};
+			for (i=0;i<args.length;i++) {
+				this.active.pop(args[i]);
+			}
+			if (vvDebug === true) { console.log("After deactivate active: "+this.active+"\n ***********\n")};
+		},
 		loadData: function(resturl, action, error) {
 			axios.get(resturl).then(function (response) {
 			    action(response.data);
