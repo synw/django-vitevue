@@ -63,7 +63,9 @@ const app = new Vue({
 		},
 		activate: function(args) {
 			if (vvDebug === true) { console.log("ACTIVATE "+args)};
-			this.active = args;
+			for (i=0;i<args.length;i++) {
+				this.active.push(args[i]);
+			}
 			if (vvDebug === true) { console.log("After activate active: "+this.active+"\n ***********\n")};
 		},
 		loadData: function(resturl, action, error) {
