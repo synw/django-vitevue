@@ -30,11 +30,14 @@ Get and post data
 
 :: 
 
+   function error(err) {
+      console.log(err)
+   }
    function action(data) {
       console.log(data)
    }
 
-   this.loadData("{% url 'myurl' %}", action);
+   this.loadData("{% url 'myurl' %}", action, error);
    
 
 ``postForm(url, data, action, error, csrfmiddlewaretoken)``: post a form

@@ -25,7 +25,10 @@ In a template:
 In `your_module/templates/vue/methods.js`:
 
   ```javascript
-loadMyContent: function(url) { 
+loadMyContent: function(url) {
+	function error(err) {
+		console.log(err)
+	}
 	function action(data) {
 		// update UI
 		app.content = data.somejsonkey;
@@ -33,7 +36,7 @@ loadMyContent: function(url) {
 		app.flush();
 		app.activate(["content"]);
 	}
-	this.loadData(url, action);
+	this.loadData(url, action, error);
 },
 postMyForm: function() {
 	function error(err) {
