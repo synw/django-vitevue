@@ -6,7 +6,8 @@ State management
 
 A basic state management mechanism is used to manage the display. Methods:
 
-``flush()``: reset all active items
+``flush()``: reset all active items: all the active variables will be reseted: a string will be set to ``""``, 
+a number to ``0``, an object to ``{}`` and a boolean to ``false``
 
 To preserve an element from beeing flushed you can pass it to the function: ``flush("item")``
 
@@ -40,19 +41,25 @@ Get and post data
 
 Note: the ``csrfmiddlewaretoken`` is optional an will be set from the session cookie if not provided
 
+Ex: in ``mymodule/templates/vue/methods.js``:
+
+.. highlight:: javascript
+
 ::
 
-   function error(err) {
-    console.log(err)
-   }
-   function action(response) {
-    console.log(response)
-   }
-   # formdata is a json object
-   this.postForm(url, formdata, action, error, myform.csrfmiddlewaretoken)
+   postMyForm: function() {
+      function error(err) {
+      console.log(err)
+      }
+      function action(response) {
+         console.log(response.data)
+      }
+      var form = document.getElementById("myform");
+      var data = this.serializeForm(form);
+      this.postForm(url, data, action, error, data.csrfmiddlewaretoken)
+   },
 
-Pass the form token
-if posting a Django form, otherwise use the session cookie
+Pass the form token if posting a Django form, otherwise use the session cookie
    
 ``str(json_obj)``: shortcurt for pretty JSON.stringify
 
