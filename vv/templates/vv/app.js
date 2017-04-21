@@ -73,6 +73,18 @@ const app = new Vue({
 				console.log(error);
 			});
 		},
+		loadContent: function(resturl, title) {
+			function action(data) {
+				document.title = title;
+				app.flush();
+				app.pageContent = data;
+				app.activate(['pageContent']);
+			}
+			function error(err) {
+				console.log(err);
+			}
+			this.loadData(resturl, action, error);
+		},
 		toggleSidebar: function() {
 			if ( this.showSidebar === false ) {
 				this.mainCol = {
@@ -119,6 +131,19 @@ const app = new Vue({
 			}).catch(function (err) {
 				error(err);
 			});
+		},
+		serializeForm: function(form) {
+			var obj = {};
+			var elements = form.querySelectorAll( "input, select, textarea" );
+			for( var i = 0; i < elements.length; ++i ) {
+				var element = elements[i];
+				var name = element.name;
+				var value = element.value;
+				if( name ) {
+					obj[ name ] = value;
+				}
+			}
+			return obj;
 		},
 		{% for appname, parts in apps.items %}
 			{% include parts.methods %}
