@@ -5,8 +5,7 @@ Install
 
 ::
    
-   cd my_project
-   git clone https://github.com/synw/django-vitevue.git && mv django-vitevue/vv .
+   pip install django-vitevue
 
 Add to installed apps:
 
