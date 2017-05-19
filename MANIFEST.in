@@ -1,0 +1,4 @@
+recursive-include vitevue/migrations *
+recursive-include vitevue/templates *
+recursive-include vitevue/templatestags *
+recursive-include vitevue/static *
