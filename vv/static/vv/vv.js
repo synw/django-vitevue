@@ -47,6 +47,12 @@ var vvMixin = {
 			}
 			return false
 		},
+		isInactive: function(item) {
+			if (store.getters.active.indexOf(item) === -1) {
+				return true
+			}
+			return false
+		},
 		activate: function(args) {
 			if (vvDebug === true) { 
 				console.log("ACTIVATE "+args);
