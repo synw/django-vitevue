@@ -20,7 +20,7 @@ Note: `extra.js` is just extra global javascript, the rest are Vue parts to be a
 Templates
 ^^^^^^^^^
 
-Put a ``{% block vues %}{% endblock %}`` in your base template
+Put a ``<script>{% block vues %}{% endblock %}</script>`` in your base template
 
 Settings
 ^^^^^^^^ 

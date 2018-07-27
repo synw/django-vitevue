@@ -26,7 +26,7 @@ Include a vue block in the main template:
 
 ::
 
-   {% block vues %}{% endblock %}
+   <script>{% block vues %}{% endblock %}</script>
    
    
 Load the libraries in html header:
