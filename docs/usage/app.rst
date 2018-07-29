@@ -44,4 +44,15 @@ Optional routing: make a ``routes.js`` file into your module template folder and
 :: 
 
    page('/someurl/', function(ctx, next) { app.doSomething() } );
+   
+Delimiters
+^^^^^^^^^^
+
+The delimiters for the vue variables are set to `{!` and `!}`. Ex:
+
+.. highlight:: javascript
+
+:: 
+
+   <div>{! my_variable !}</div>
 

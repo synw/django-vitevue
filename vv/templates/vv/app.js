@@ -3,6 +3,7 @@ var vvDebug = {% isdebug %};
 const app = new Vue({
 	el: '#app',
 	mixins: [vvMixin],
+	delimiters: ['{!', '!}'],
     data () {
         return {
 			{% for appname, parts in apps.items %}
