@@ -33,7 +33,6 @@ loadMyContent: function(url) {
 		// update UI
 		app.content = data.somejsonkey;
 		// manage state
-		app.flush();
 		app.activate(["content"]);
 	}
 	this.loadData(url, action, error);
