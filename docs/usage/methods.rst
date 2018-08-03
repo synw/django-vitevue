@@ -15,11 +15,12 @@ To preserve an element from beeing flushed you can pass it to the function: ``fl
 
 ``isActive("item")``: return true or false, usefull for v-show
 
+``isInactive("item")``: return true or false
+
 .. highlight:: django
 
 :: 
 
-   this.flush();
    this.activate(["myitem"]);
    
 
