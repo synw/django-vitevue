@@ -20,13 +20,17 @@ Add to the bottom of urls.py:
    urlpatterns.append(url(r'^',include('vv.urls')))
 
 
-Include a vue block in the main template:
+In the main template:
 
 .. highlight:: django
 
 ::
-
-   <script>{% block vues %}{% endblock %}</script>
+   <body>
+      <div id="app">
+         ...
+      </div>
+      <script>{% block vues %}{% endblock %}</script>
+   </body>
    
    
 Load the libraries in html header:
