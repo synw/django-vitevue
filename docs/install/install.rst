@@ -25,14 +25,15 @@ In the main template:
 .. highlight:: django
 
 ::
+
    <body>
-      <div id="app">
-         ...
-      </div>
-      <script>{% block vues %}{% endblock %}</script>
+	<div id="app">
+	   <!-- main template content -->
+	</div>
+	<script>{% block vues %}{% endblock %}</script>
    </body>
    
-   
+
 Load the libraries in html header:
 
 .. highlight:: html
