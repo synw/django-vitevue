@@ -25,5 +25,8 @@ class PostFormView(CreateView):
         clean_data = {}
         for field in self.fields:
             clean_data[field] = escape(data[field])
-        self.action(self.request, clean_data)
-        return JsonResponse({"error": 0})
+        data = self.action(self.request, clean_data)
+        resp = {"error": 0}
+        if data is not None:
+            resp = {"error": 0, **data}
+        return JsonResponse(resp)
