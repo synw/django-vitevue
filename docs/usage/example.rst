@@ -53,26 +53,16 @@ In ``myapp/views.py``:
 :: 
    
    # -*- coding: utf-8 -*-
-   import json
-   from django.http import JsonResponse
-   from django.utils.html import escape
-   from django.views.generic.edit import CreateView
-   from vv.utils import check_csrf
+   from vv.views import PostFormView
    from .models import MyModel
 
 
-   class MyModelCreate(CreateView):
+   class MyModelCreate(PostFormView):
    	model = MyModel
    	fields = ['field1", "field2"]
 
-       def post(self, request, *args, **kwargs):
-           if check_csrf(request) == False:
-               return JsonResponse({"error": 1})
-           data = json.loads(self.request.body.decode('utf-8'))
-           field1 = escape(data['field1'])
-           field2 = escape(data['field2'])
-           MyModel.objects.create(field1=field1,field2=field2)
-           return JsonResponse({"error": 0}
+       def action(self, request, clean_data):
+           MyModel.objects.save(field1=clean_data["field1"], field2=clean_data["field2"])
 
 The urls
 --------

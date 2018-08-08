@@ -68,6 +68,9 @@ Ex: in ``mymodule/templates/vue/methods.js``:
       // "myform" is the form id
    },
    
+The postForm method comes with a Django view to handle the post actions on the backend side: see the example in the
+next section for usage instructions
+   
 Notifications
 ^^^^^^^^^^^^^
 
