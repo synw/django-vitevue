@@ -76,8 +76,15 @@ var vvMixin = {
 				console.log(error);
 			});
 		},
-		postForm: function(url, data, action, error, token) {
-			if (!token) {
+		postForm: function(url, formname, action, error) {
+			var form = this.get(formname);
+			var data = this.serializeForm(form, true);
+			if (data === false) {
+				return
+			};
+			if ("csrfmiddlewaretoken" in data) {
+				token = data.csrfmiddlewaretoken
+			} else {
 				token = csrftoken
 			}
 			var ax = axios.create({headers: {'X-CSRFToken': token}});
@@ -91,13 +98,22 @@ var vvMixin = {
 				error(err);
 			});
 		},
-		serializeForm: function(form) {
+		serializeForm: function(form, validate) {
 			var obj = {};
 			var elements = form.querySelectorAll( "input, select, textarea" );
 			for( var i = 0; i < elements.length; ++i ) {
 				var element = elements[i];
 				var name = element.name;
 				var value = element.value;
+				if (validate === true) {
+					if (element.hasAttribute('required')) {
+						console.log("REQUIRED", element);
+						if (!value) {
+							console.log("INVALID", name);
+							return false
+						}
+					}
+				}
 				if( name ) {
 					obj[ name ] = value;
 				}
