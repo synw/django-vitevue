@@ -39,10 +39,8 @@ In ``myapp/vues/methods.js``:
 			// handle error
 		}
 	}
-	var form = this.get("addmymodel");
-	var data = this.serializeForm(form);
 	var url = "/myapp/add/";
-	this.postForm(url, data, action, error, data.csrfmiddlewaretoken)
+	this.postForm(url, "addmymodel", action, error)
     },
    
 The Django view
