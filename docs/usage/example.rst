@@ -6,7 +6,7 @@ Example for how to post a Django form.
 The template
 ------------
 
-Make a form template in `myapp/templates/myapp/mymodel_form.html`:
+Make a form template in ``myapp/templates/myapp/mymodel_form.html``:
 
 .. highlight:: django
 
@@ -15,13 +15,13 @@ Make a form template in `myapp/templates/myapp/mymodel_form.html`:
    <form id="addmymodel" onsubmit="return false" method="post">
     {% csrf_token %}
     {{ form }}
-    <button class="button" onclick="javascript:app.postMyForm()">Save</button>
+    <button class="button" @click="postMyForm()">Save</button>
    </form>
 
 The javascript
 --------------
 
-In `myapp/vues/methods.js`:
+In ``myapp/vues/methods.js``:
 
 .. highlight:: javascript
 
@@ -39,7 +39,7 @@ In `myapp/vues/methods.js`:
 			// handle error
 		}
 	}
-	var form = document.getElementById("addmymodel");
+	var form = this.get("addmymodel");
 	var data = this.serializeForm(form);
 	var url = "/myapp/add/";
 	this.postForm(url, data, action, error, data.csrfmiddlewaretoken)
@@ -48,7 +48,7 @@ In `myapp/vues/methods.js`:
 The Django view
 ---------------
 
-In `myapp/views.py`:
+In ``myapp/views.py``:
 
 .. highlight:: python
 
@@ -79,7 +79,7 @@ In `myapp/views.py`:
 The urls
 --------
  
- In `myapp/urls.py`:
+ In ``myapp/urls.py``:
  
  .. highlight:: python
 

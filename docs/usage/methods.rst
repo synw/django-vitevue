@@ -64,8 +64,15 @@ Ex: in ``mymodule/templates/vue/methods.js``:
    },
 
 Pass the form token if posting a Django form, otherwise use the session cookie
+
+Shortcuts
+^^^^^^^^^
    
 ``str(json_obj)``: shortcurt for pretty JSON.stringify
+
+``get("id")``: shortcurt for document.getElementById
+
+``query(querystring)``: shortcurt to encode a Graphql query: does '/graphql?query='+encodeURIComponent(querystring)
 
 
  
