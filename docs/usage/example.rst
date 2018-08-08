@@ -15,7 +15,7 @@ Make a form template in ``myapp/templates/myapp/mymodel_form.html``:
    <form id="addmymodel" onsubmit="return false" method="post">
     {% csrf_token %}
     {{ form }}
-    <button class="button" @click="postMyForm()">Save</button>
+    <button class="button" onclick="javascript:app.postMyForm()">Save</button>
    </form>
 
 The javascript
