@@ -13,12 +13,13 @@ Add to installed apps:
 
    "vv",
    
-Add to the bottom of urls.py:
+Add to the urls: 
 
 ::
 
+   # to manage all urls with Vite Vue
    urlpatterns.append(url(r'^',include('vv.urls')))
-
+   # or put the in your app to manage Vite Vue urls from a specific path
 
 In the main template:
 
