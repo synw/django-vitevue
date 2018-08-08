@@ -107,9 +107,10 @@ var vvMixin = {
 				var value = element.value;
 				if (validate === true) {
 					if (element.hasAttribute('required')) {
-						console.log("REQUIRED", element);
 						if (!value) {
-							console.log("INVALID", name);
+							if (vvDebug === true) { 
+								console.log("Required field", name, "is missing. Not posting form.");
+							}
 							return false
 						}
 					}
