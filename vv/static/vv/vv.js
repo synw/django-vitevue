@@ -104,6 +104,18 @@ var vvMixin = {
 			}
 			return obj;
 		},
+		notify: function(txt, dest, delay, nclass) {
+			delay = typeof delay !== 'undefined' ? delay : 5;
+			var tdelay = delay*1000;
+			nclass = typeof nclass !== 'undefined' ? nclass : "info";
+			var html = '<div class="notification is-'+nclass+'">';
+			html = html+'<button class="delete" onclick="javascript:app.closeNotif(\''+dest+'\')"></button>'+txt+'</div>';
+			this[dest] = html;
+			setTimeout(function(){app[dest] = ""}, tdelay);
+		},
+		closeNotif: function(dest) {
+			this[dest] = "";
+		},
 		query: function(q) {
 			var q = encodeURIComponent(q);
 			var url = '/graphql?query='+q;
