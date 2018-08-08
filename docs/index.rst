@@ -23,6 +23,7 @@ Django Vite Vue's documentation
    
 	usage/app
 	usage/methods
+	usage/example
 
 
 .. ressources
