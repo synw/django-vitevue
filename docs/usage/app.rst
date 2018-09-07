@@ -10,6 +10,7 @@ To make a module using Vuejs frontend structure your module's template folder sh
    vues/data.js
    vues/methods.js
    vues/computed.js
+   vues/components.js
    vues/extra.js
    routes.js
    

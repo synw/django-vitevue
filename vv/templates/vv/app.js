@@ -16,6 +16,11 @@ const app = new Vue({
 			{% include parts.methods %}
 		{% endfor %}
 	},
+	components: {
+		{% for appname, parts in apps.items %}
+			{% include parts.components %}
+		{% endfor %}
+	},
 	computed: {
 		{% for appname, parts in apps.items %}
 			{% include parts.computed %}
