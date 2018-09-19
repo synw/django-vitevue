@@ -19,11 +19,6 @@ A basic state management mechanism is used to manage the display. Methods:
 ``isActive("item")``: return true or false
 
 ``isInactive("item")``: return true or false
-
-``flush()``: reset all active items: all the active variables will be reseted: a string will be set to ``""``, 
-a number to ``0``, an object to ``{}`` and a boolean to ``false``
-
-To preserve an element from beeing flushed you can pass it to the function: ``flush("item")``
    
 
 Fetch json data
