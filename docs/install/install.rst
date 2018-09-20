@@ -42,7 +42,7 @@ Load the libraries in html header:
 ::
 
    <script type="text/javascript" src="{% static 'js/vue.min.js' %}"></script>
-   <script type="text/javascript" src="{% static 'js/vuex.js' %}"></script>
+   <script type="text/javascript" src="{% static 'js/vuex.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'js/page.js' %}"></script>
    <script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
    <script type="text/javascript" src="{% static 'vv//vv.js' %}"></script>
