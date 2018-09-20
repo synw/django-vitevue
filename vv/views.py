@@ -24,17 +24,16 @@ class PostFormView(FormView, Err):
             pass
         if check_csrf(request) == False:
             return JsonResponse({"error": 1})
-        try:
-            data = json.loads(self.request.body.decode('utf-8'))
-            clean_data = {}
-            for field in data:
-                if field != "csrfmiddlewaretoken":
-                    clean_data[field] = escape(data[field])
-            data = self.action(self.request, clean_data)
+        data = json.loads(self.request.body.decode('utf-8'))
+        clean_data = {}
+        for field in data:
+            if field != "csrfmiddlewaretoken":
+                clean_data[field] = escape(data[field])
+        data, err = self.action(self.request, clean_data)
+        if err is None:
             resp = {"error": 0}
-            if data is not None:
-                resp = {"error": 0, **data}
-            return JsonResponse(resp)
-        except Exception as e:
-            err = self.err(e)
-            return JsonResponse({"error": err.msg})
+        else:
+            resp = {"error": err}
+        if data is not None:
+            resp["data"] = data
+        return JsonResponse(resp)

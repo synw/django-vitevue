@@ -1,7 +1,7 @@
-Form example
+Handle forms
 ============
 
-Example for how to post a Django form. 
+How to post a Django form
 
 The template
 ------------
@@ -63,6 +63,28 @@ In ``myapp/views.py``:
 
        def action(self, request, clean_data):
            MyModel.objects.save(field1=clean_data["field1"], field2=clean_data["field2"])
+           
+           
+Note: the form can be a model form or a simple form: the ``form`` and ``field`` or ``form_class`` properties are
+optional
+
+The ``PostFormView`` can handle return data and errors in the action function:
+
+.. highlight:: python
+
+:: 
+   
+    def action(self, request, clean_data):
+        data = None
+        error = None
+        try:
+            obj = MyModel.objects.save(field1=clean_data["field1"], field2=clean_data["field2"])
+            data = {"object": str(obj)}
+        except:
+            error = "Can not save model"
+        return data, error
+        
+The return data and error will be sent to the frontend in response to the post action
 
 The urls
 --------
