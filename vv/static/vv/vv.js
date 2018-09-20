@@ -1,6 +1,7 @@
 var vvDebug = false;
 
 var vvMixin = {
+	delimiters: ['{!', '!}'],
     data: function() {
         return {
         	active: [],
