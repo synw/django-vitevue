@@ -18,7 +18,7 @@ class PostFormView(FormView, Err):
         pass
 
     def post(self, request, *args, **kwargs):
-        super(FormView, self).post(request, *args, **kwargs)
+        super(PostFormView, self).post(request, *args, **kwargs)
         if check_csrf(request) == False:
             return JsonResponse({"error": 1})
         try:
