@@ -18,7 +18,10 @@ class PostFormView(FormView, Err):
         pass
 
     def post(self, request, *args, **kwargs):
-        super(PostFormView, self).post(request, *args, **kwargs)
+        try:
+            super(PostFormView, self).post(request, *args, **kwargs)
+        except:
+            pass
         if check_csrf(request) == False:
             return JsonResponse({"error": 1})
         try:
