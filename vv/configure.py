@@ -2,8 +2,6 @@ import json
 from typing import Dict, List, Set, Tuple
 from pathlib import Path
 
-from django.conf import settings
-
 from vv.utils import rel_path
 
 
@@ -28,7 +26,7 @@ def app_dirs(
     """
     Get an app's compilation output dirs
     """
-    base_dir = settings.BASE_DIR
+    base_dir = app_dir.parent
     # print("Base dir:", base_dir)
     rel_app_dir = rel_path(app_dir, base_dir)
     rel_static_dir = rel_path(static_dir, app_dir)
