@@ -4,7 +4,7 @@ from typing import Dict, List
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from vv.conf import VITE_APPS
+from vv.conf import VITE_APPS, read_settings
 from vv.configure import (
     app_dirs,
     check_packages_dependencies,
@@ -39,49 +39,43 @@ class Command(BaseCommand):
         if settings.DEBUG is False:
             print("This command only works in debug mode: do not use in production")
             return
+        BASE_DIR, STATICFILES_DIR, TEMPLATES_DIR = read_settings()
         # dest = options["destination"][0]
-        base_dir: Path = settings.BASE_DIR
-        static_dir: Path = base_dir / "static"
-        templates_dir: Path = base_dir / "templates"
-        if hasattr(settings, "STATICFILES_DIRS"):
-            static_dir = settings.STATICFILES_DIRS[0]
-        if hasattr(settings, "TEMPLATES"):
-            templates_dir = settings.TEMPLATES[0]["DIRS"][0]
         # TODO : make sure that static_dir and templates_dir really exist
         # read conf from settings or try to find a default frontend dir
-        print("Reading VITE_APPS config in settings...")
+        print("Reading VITE_APPS config in ..")
         apps: List[Dict[str, Path]] = []
         if options["app"] is not None:
             # print(f'Generating config for app {options["app"]}')
-            app_path = settings.BASE_DIR / options["app"]
+            app_path = BASE_DIR / options["app"]
             if not app_path.exists():
                 raise ValueError(
-                    f'The folder {options["app"]} does not exist in {settings.BASE_DIR}'
+                    f'The folder {options["app"]} does not exist in {BASE_DIR}'
                 )
             apps.append(
                 {
                     "dir": app_path,
-                    "template": templates_dir / "index.html",
-                    "static": static_dir / "frontend",
+                    "template": TEMPLATES_DIR / "index.html",
+                    "static": STATICFILES_DIR / "frontend",
                 }
             )
         elif len(VITE_APPS) == 0:
             print("No VITE_APPS config found, searching for a frontend folder")
             # check if a directory named "frontend" exists
-            if Path(settings.BASE_DIR / "frontend").exists():
+            if Path(BASE_DIR / "frontend").exists():
                 apps.append(
                     {
-                        "dir": settings.BASE_DIR / "frontend",
-                        "template": templates_dir / "index.html",
-                        "static": static_dir / "frontend",
+                        "dir": BASE_DIR / "frontend",
+                        "template": TEMPLATES_DIR / "index.html",
+                        "static": STATICFILES_DIR / "frontend",
                     }
                 )
-            elif Path(settings.BASE_DIR.parent / "frontend").exists():
+            elif Path(BASE_DIR.parent / "frontend").exists():
                 apps.append(
                     {
-                        "dir": settings.BASE_DIR.parent / "frontend",
-                        "template": templates_dir / "index.html",
-                        "static": static_dir / "frontend",
+                        "dir": BASE_DIR.parent / "frontend",
+                        "template": TEMPLATES_DIR / "index.html",
+                        "static": STATICFILES_DIR / "frontend",
                     }
                 )
         else:
