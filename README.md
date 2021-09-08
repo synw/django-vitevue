@@ -53,3 +53,109 @@ Use the *VITE_APPS* setting to configure the compilation destination:
 	  }
 	]
   ```
+
+## Example
+
+#### Backend
+
+   ```
+  pip install django-introspection
+   ```
+
+Create a project directory and initialize a Django project with *static* and *templates* folders:
+
+  ```
+  mkdir my_project
+  cd my_project
+  django-admin createproject my_project
+  cd my_project
+  mkdir templates static
+  cd ..
+  ```
+
+Add `"vv",` to `INSTALLED_APPS`
+
+Configure the basic settings:
+
+   ```python
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        # ...
+    },
+]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_URL = "/static/"
+   ```
+
+Add an url to view the index template:
+
+   ```python
+from django.urls import path
+from django.views.generic import TemplateView
+
+urlpatterns = [
+    # ...
+    path("", TemplateView.as_view(template_name="index.html")),
+]
+   ```
+
+### Frontend
+
+Initialize a Vue 3 Typescript frontend:
+
+  ```
+  yarn create vite frontend --template=vue-ts
+  cd frontend
+  yarn install
+  cd ..
+  ```
+
+### Run
+
+Run the migrations:
+
+   ```
+   python my_project/manage.py migrate
+   ```
+
+Generate the frontend config. Dry run:
+
+   ```
+   python my_project/manage.py viteconf
+   ```
+
+Install the frontend dev dependencies as indicated in the command output message:
+
+   ```
+  cd frontend 
+  yarn add -D move-file-cli del-cli npm-run-all
+  cd ..
+   ```
+
+Then write the config to *vite.config.ts* and *package.json*:
+
+   ```
+   python my_project/manage.py viteconf -w
+   ```
+
+Build the frontend:
+
+   ```
+  cd frontend 
+  yarn build
+  cd ..
+   ```
+
+Run the server:
+
+   ```
+   python my_project/manage.py runserver
+   ```
+
+Example repository: https://github.com/synw/django-vitevue-example
