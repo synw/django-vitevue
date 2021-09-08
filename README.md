@@ -56,7 +56,7 @@ Use the *VITE_APPS* setting to configure the compilation destination:
 
 ## Example
 
-#### Backend
+### Backend
 
    ```
   pip install django-introspection
