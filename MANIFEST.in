@@ -1,4 +1,2 @@
-recursive-include vv/migrations *
-recursive-include vv/templates *
-recursive-include vv/templatestags *
-recursive-include vv/static *
+recursive-include vv/frontend_models *
+recursive-include vv/management *
