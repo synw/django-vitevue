@@ -66,12 +66,20 @@ class Command(BaseCommand):
                 }
             )
         elif len(VITE_APPS) == 0:
-            print("No VITE_APPS config found, searching for a frontend folder...")
+            print("No VITE_APPS config found, searching for a frontend folder")
             # check if a directory named "frontend" exists
             if Path(settings.BASE_DIR / "frontend").exists():
                 apps.append(
                     {
                         "dir": settings.BASE_DIR / "frontend",
+                        "template": templates_dir / "index.html",
+                        "static": static_dir / "frontend",
+                    }
+                )
+            elif Path(settings.BASE_DIR.parent / "frontend").exists():
+                apps.append(
+                    {
+                        "dir": settings.BASE_DIR.parent / "frontend",
                         "template": templates_dir / "index.html",
                         "static": static_dir / "frontend",
                     }
