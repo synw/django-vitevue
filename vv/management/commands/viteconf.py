@@ -40,10 +40,9 @@ class Command(BaseCommand):
             print("This command only works in debug mode: do not use in production")
             return
         BASE_DIR, STATICFILES_DIR, TEMPLATES_DIR = read_settings()
-        # dest = options["destination"][0]
         # TODO : make sure that static_dir and templates_dir really exist
         # read conf from settings or try to find a default frontend dir
-        print("Reading VITE_APPS config in ..")
+        print("Reading VITE_APPS config in settings ..")
         apps: List[Dict[str, Path]] = []
         if options["app"] is not None:
             # print(f'Generating config for app {options["app"]}')
@@ -66,14 +65,6 @@ class Command(BaseCommand):
                 apps.append(
                     {
                         "dir": BASE_DIR / "frontend",
-                        "template": TEMPLATES_DIR / "index.html",
-                        "static": STATICFILES_DIR / "frontend",
-                    }
-                )
-            elif Path(BASE_DIR.parent / "frontend").exists():
-                apps.append(
-                    {
-                        "dir": BASE_DIR.parent / "frontend",
                         "template": TEMPLATES_DIR / "index.html",
                         "static": STATICFILES_DIR / "frontend",
                     }

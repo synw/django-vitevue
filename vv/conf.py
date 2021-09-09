@@ -18,6 +18,7 @@ def read_settings() -> Tuple[Path, Path, Path]:
     # make sure all the required settings are there
     if not hasattr(settings, "BASE_DIR"):
         raise ValueError("Missing BASE_DIR setting")
+    # static
     if not hasattr(settings, "STATICFILES_DIRS"):
         raise ValueError("Missing STATICFILES_DIRS setting")
     if not hasattr(settings, "STATICFILES_DIRS"):
@@ -25,6 +26,7 @@ def read_settings() -> Tuple[Path, Path, Path]:
     else:
         if len(settings.STATICFILES_DIRS) == 0:
             raise ValueError("STATICFILES_DIRS setting is empty")
+    # templates
     if not hasattr(settings, "TEMPLATES"):
         raise ValueError("Missing TEMPLATES setting")
     else:
@@ -47,4 +49,6 @@ def read_settings() -> Tuple[Path, Path, Path]:
         templates_dir = Path(settings.TEMPLATES[0]["DIRS"][0])
     else:
         templates_dir = settings.TEMPLATES[0]["DIRS"][0]
-    return base_dir, statifiles_dir, templates_dir
+    # check for a VV_BASE_DIR or set to BASE_DIR parent
+    vv_base_dir: Path = getattr(settings, "VV_BASE_DIR", base_dir.parent)
+    return vv_base_dir, statifiles_dir, templates_dir

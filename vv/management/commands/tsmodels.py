@@ -1,11 +1,15 @@
 # import os
 
+import os
+from vv.frontend_models.write import write_tsmodel
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from introspection import AppInspector
+from introspection.inspector import title, subtitle
 
-from ...frontend_models.model import FrontendModel
+from vv.conf import read_settings
+from vv.frontend_models.model import FrontendModel
 
 
 class Command(BaseCommand):
@@ -13,10 +17,19 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            "app", nargs="+", type=str, help="app name to generate models from"
+            "app",
+            nargs="+",
+            type=str,
+            help="the Django app name to generate models from",
         )
         parser.add_argument(
-            "destination", nargs="+", type=str, help="compilation destination"
+            "-w",
+            nargs="?",
+            dest="destination",
+            type=str,
+            default=None,
+            help="the frontend app to add models to. A models directory "
+            "will be created into it if it does not exists",
         )
 
     def handle(self, *args, **options):
@@ -28,16 +41,31 @@ class Command(BaseCommand):
             print("Provide an app to generate models for")
             return
         app_name = options["app"][0]
-        print(f"Creating frontend models for app {app_name}")
+        # print(f"Creating frontend models for app {app_name}")
         app = AppInspector(app_name)
         app.get_models()
         for model in app.models:
-            print(f"Creating frontend model {model.name}")
+            title(f"Model {model.name}")
             fm = FrontendModel(model)
-            print(fm.tsclass())
-            print("------------")
-            print(fm.interface())
-            print(options["destination"][0])
-            # if not os.path.exists("/tmp/test"):
-            #    with open("/tmp/test", "w"):
-            #        pass
+            if options["destination"] is None:
+                print(fm.tsclass() + "\n")
+                subtitle("Interface")
+                print("\n" + fm.interface())
+            else:
+                BASE_DIR, _, _ = read_settings()
+                app = BASE_DIR / options["destination"]
+                if not app.exists():
+                    raise FileNotFoundError(
+                        f"The destination folder {app} does not exist"
+                    )
+                # check that a models directory exists in the app
+                models_dir = app / "models"
+                if not models_dir.exists():
+                    print("Creating models directory")
+                    os.mkdir(models_dir)
+                name = fm.snake_case_name
+                dest_dir = models_dir / f"{name}"
+                if not dest_dir.exists():
+                    print(f"Creating directory {name}")
+                    os.mkdir(dest_dir)
+                write_tsmodel(fm, dest_dir)
