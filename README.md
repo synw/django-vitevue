@@ -75,6 +75,134 @@ To write the models to the frontend app:
   python {project_name}/manage.py tsmodels -w name_of_frontend_dir
    ```
 
+<details>
+<summary>Example output:</summary>
+
+These Django models:
+<p>
+
+```python
+class Market(models.Model):
+    name = models.CharField(max_length=255)
+
+class Instrument(models.Model):
+    name = models.CharField(max_length=255)
+
+class Trade(models.Model):
+    date = models.DateTimeField()
+    price = models.FloatField()
+    quantity = models.FloatField()
+    market = models.ForeignKey(Market, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE)
+    side = models.CharField(max_length=4, choices=SIDE)
+```
+</p>
+Outputs these Typescript models:
+<p>
+
+```
+                     Model Market
+
+import MarketContract from "./contract";
+
+export default class Market {
+	id: number;
+	name: string;
+
+	constructor ({id, name}: MarketContract) {
+		this.id=id;
+		this.name=name
+	}
+
+
+	static fromJson(data: Record<string, any>): Market {
+		return new Market(data as MarketContract)
+	}
+}
+
+-------------- Interface -------------- 
+
+export default interface MarketContract {
+	id: number,
+	name: string,
+}
+
+                     Model Instrument
+
+import InstrumentContract from "./contract";
+
+export default class Instrument {
+	id: number;
+	name: string;
+
+	constructor ({id, name}: InstrumentContract) {
+		this.id=id;
+		this.name=name
+	}
+
+
+	static fromJson(data: Record<string, any>): Instrument {
+		return new Instrument(data as InstrumentContract)
+	}
+}
+
+-------------- Interface -------------- 
+
+export default interface InstrumentContract {
+	id: number,
+	name: string,
+}
+
+                     Model Trade
+
+import MarketContract from "../market/contract";
+import InstrumentContract from "../instrument/contract";
+import TradeContract from "./contract";
+
+export default class Trade {
+	id: number;
+	date: string;
+	price: number;
+	quantity: number;
+	market: MarketContract;
+	instrument: InstrumentContract;
+	side: string;
+
+	constructor ({id, date, price, quantity, market, instrument, side}: TradeContract) {
+		this.id=id;
+		this.date=date;
+		this.price=price;
+		this.quantity=quantity;
+		this.market=market;
+		this.instrument=instrument;
+		this.side=side
+	}
+
+
+	static fromJson(data: Record<string, any>): Trade {
+		return new Trade(data as TradeContract)
+	}
+}
+
+-------------- Interface -------------- 
+
+import MarketContract from "../market/contract";
+import InstrumentContract from "../instrument/contract";
+
+export default interface TradeContract {
+	id: number,
+	date: string,
+	price: number,
+	quantity: number,
+	market: MarketContract,
+	instrument: InstrumentContract,
+	side: string,
+}
+
+```
+</p>
+</details>  
+
 ## Example
 
 ### Backend
