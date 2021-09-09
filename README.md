@@ -1,6 +1,10 @@
 # Django Vite Vue
 
-Manage Vitejs frontends and compile them to Django static files and templates
+Manage Vitejs frontends and compile them to Django static files and templates. Two management
+commands are available:
+
+- [viteconf](#configuration-of-a-vitejs-app): generate a Vitejs compilation configuration
+- [tsmodels](#generate-typescript-models): generate Typescript models from Django models
 
 ## Configuration of a Vitejs app
 
@@ -52,15 +56,28 @@ Use the *VITE_APPS* setting to configure the compilation destination:
 		  "static": static_dir / "frontend",
 	  }
 	]
+
+   # the directory containing the frontend and the django project
+   VV_BASE_DIR: Path = BASE_DIR.parent # default if not set
   ```
+
+## Generate Typescript models
+
+The `tsmodels` command can generate Typescript models from Django models:
+
+   ```
+  python {project_name}/manage.py tsmodels my_django_app
+   ```
+
+To write the models to the frontend app:
+
+   ```
+  python {project_name}/manage.py tsmodels -w name_of_frontend_dir
+   ```
 
 ## Example
 
 ### Backend
-
-   ```
-  pip install django-introspection
-   ```
 
 Create a project directory and initialize a Django project with *static* and *templates* folders:
 
