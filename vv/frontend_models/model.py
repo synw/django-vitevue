@@ -77,6 +77,23 @@ class FrontendModel:
         buf.append("\t}")
         return "\n".join(buf)
 
+    def from_json_method(self) -> str:
+        """
+        Get the to_json method for a Typescript class
+        """
+        buf: List[str] = [
+            (
+                f"\tstatic fromJson(data: Record<string, any>):"
+                f" {self.model.name}"
+                " {"
+            )
+        ]
+        buf.append(
+            f"\t\treturn new {self.model.name}(data as {self.model.name}Contract)"
+        )
+        buf.append("\t}")
+        return "\n".join(buf)
+
     def tsclass(self) -> str:
         """
         Render a Typescript class for a model
@@ -95,6 +112,7 @@ class FrontendModel:
                     )
                 )
         buf.append(f"\n{self.constructor()}")
+        buf.append("\n\n" + self.from_json_method())
         buf.append("}")
         output = ""
         if len(extra_imports) > 0:
