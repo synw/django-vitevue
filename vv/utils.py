@@ -1,8 +1,30 @@
 from pathlib import Path
 import re
 import os
+from typing import Union
 
 from introspection.const import NUMBER_FIELDS, STRING_FIELDS
+
+
+def frontend_app_path(base_dir: Path, path: Union[Path, None]) -> Path:
+    """
+    Get a frontend app path
+    """
+    app_path: Union[Path, None] = None
+    if path is not None:
+        app_path = base_dir / path
+    else:
+        # try to find a default dir
+        d = base_dir / "frontend"
+        if d.exists():
+            app_path = d
+    if app_path is not None:
+        if app_path.exists():
+            return app_path
+    if path is not None:
+        raise FileNotFoundError(f"frontend app path {app_path} not found")
+    else:
+        raise FileNotFoundError("default frontend dir not found")
 
 
 def rel_path(path: Path, relative_to: Path) -> Path:

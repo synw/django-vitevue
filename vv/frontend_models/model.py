@@ -30,6 +30,13 @@ class FrontendModel:
         return f'import {self.model.name}Contract from "./contract"'
 
     @property
+    def api_relative_import(self) -> str:
+        """
+        Get the Typescript api import
+        """
+        return 'import api from "../../api"'
+
+    @property
     def snake_case_name(self) -> str:
         """
         Convert the model name to snake case
@@ -68,29 +75,12 @@ class FrontendModel:
         params: List[str] = []
         main: List[str] = []
         for field in self.model.fields:
-            main.append(f"\t\tthis.{field.name}={field.name}")
+            main.append(f"\t\tthis.{field.name} = {field.name}")
             params.append(f"{field.name}")
-        c_begin = "\tconstructor ({"
+        c_begin = "\tconstructor ({ "
         c_end = f": {self.model.name}Contract) {'{'}"
-        buf.append(c_begin + ", ".join(params) + "}" + c_end)
+        buf.append(c_begin + ", ".join(params) + " }" + c_end)
         buf.append(";\n".join(main))
-        buf.append("\t}")
-        return "\n".join(buf)
-
-    def from_json_method(self) -> str:
-        """
-        Get the to_json method for a Typescript class
-        """
-        buf: List[str] = [
-            (
-                f"\tstatic fromJson(data: Record<string, any>):"
-                f" {self.model.name}"
-                " {"
-            )
-        ]
-        buf.append(
-            f"\t\treturn new {self.model.name}(data as {self.model.name}Contract)"
-        )
         buf.append("\t}")
         return "\n".join(buf)
 
@@ -112,13 +102,50 @@ class FrontendModel:
                     )
                 )
         buf.append(f"\n{self.constructor()}")
-        buf.append("\n\n" + self.from_json_method())
+        buf.append("\n" + self.from_json_method())
         buf.append("}")
         output = ""
         if len(extra_imports) > 0:
             output = ";\n".join(extra_imports) + ";\n"
         output += "\n".join(buf)
         return output
+
+    def from_json_method(self) -> str:
+        """
+        Get the to_json method for a Typescript class
+        """
+        buf: List[str] = [
+            (
+                f"\tstatic fromJson(data: Record<string, any>):"
+                f" {self.model.name}"
+                " {"
+            )
+        ]
+        buf.append(
+            f"\t\treturn new {self.model.name}(data as {self.model.name}Contract)"
+        )
+        buf.append("\t}")
+        return "\n".join(buf)
+
+    def load_method(self) -> str:
+        """
+        Get the load method for a Typescript class
+        """
+        buf: List[str] = [
+            (
+                f"\tstatic async load(id: number | string): Promise<{self.model.name}>"
+                " {"
+            )
+        ]
+        line = (
+            "\t\tconst res = await api.get<Record<string, any>>(`/api/"
+            f"{self.snake_case_name}/$"
+            "{id}/`);"
+        )
+        buf.append(line)
+        buf.append(f"\t\treturn {self.model.name}.fromJson(res)")
+        buf.append("\t}")
+        return "\n".join(buf)
 
     def field_type(self, field: ModelFieldRepresentation) -> str:
         """

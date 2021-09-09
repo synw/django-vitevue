@@ -39,17 +39,17 @@ class Command(BaseCommand):
         if settings.DEBUG is False:
             print("This command only works in debug mode: do not use in production")
             return
-        BASE_DIR, STATICFILES_DIR, TEMPLATES_DIR = read_settings()
+        VV_BASE_DIR, STATICFILES_DIR, TEMPLATES_DIR = read_settings()
         # TODO : make sure that static_dir and templates_dir really exist
         # read conf from settings or try to find a default frontend dir
         print("Reading VITE_APPS config in settings ..")
         apps: List[Dict[str, Path]] = []
         if options["app"] is not None:
             # print(f'Generating config for app {options["app"]}')
-            app_path = BASE_DIR / options["app"]
+            app_path = VV_BASE_DIR / options["app"]
             if not app_path.exists():
                 raise ValueError(
-                    f'The folder {options["app"]} does not exist in {BASE_DIR}'
+                    f'The folder {options["app"]} does not exist in {VV_BASE_DIR}'
                 )
             apps.append(
                 {
@@ -61,10 +61,10 @@ class Command(BaseCommand):
         elif len(VITE_APPS) == 0:
             print("No VITE_APPS config found, searching for a frontend folder")
             # check if a directory named "frontend" exists
-            if Path(BASE_DIR / "frontend").exists():
+            if Path(VV_BASE_DIR / "frontend").exists():
                 apps.append(
                     {
-                        "dir": BASE_DIR / "frontend",
+                        "dir": VV_BASE_DIR / "frontend",
                         "template": TEMPLATES_DIR / "index.html",
                         "static": STATICFILES_DIR / "frontend",
                     }

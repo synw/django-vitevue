@@ -1,7 +1,5 @@
-# import os
-
 import os
-from vv.frontend_models.write import write_tsmodel
+
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -10,10 +8,11 @@ from introspection.inspector import title, subtitle
 
 from vv.conf import read_settings
 from vv.frontend_models.model import FrontendModel
+from vv.frontend_models.write import write_tsmodel
 
 
 class Command(BaseCommand):
-    help = "Create frontend models for an app"
+    help = "Create Typescript models for an app"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -52,14 +51,14 @@ class Command(BaseCommand):
                 subtitle("Interface")
                 print("\n" + fm.interface())
             else:
-                BASE_DIR, _, _ = read_settings()
-                app = BASE_DIR / options["destination"]
-                if not app.exists():
+                VV_BASE_DIR, _, _ = read_settings()
+                app_src = VV_BASE_DIR / options["destination"] / "src"
+                if not app_src.exists():
                     raise FileNotFoundError(
-                        f"The destination folder {app} does not exist"
+                        f"The destination folder {app_src} does not exist"
                     )
                 # check that a models directory exists in the app
-                models_dir = app / "models"
+                models_dir = app_src / "models"
                 if not models_dir.exists():
                     print("Creating models directory")
                     os.mkdir(models_dir)

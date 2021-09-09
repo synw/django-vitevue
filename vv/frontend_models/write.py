@@ -6,19 +6,25 @@ from django.core.management.base import CommandError
 from .model import FrontendModel
 
 
-def check_for_file_overwrite(file: Path) -> Tuple[bool, bool]:
+def check_for_file_overwrite(file: Path, default_yes: bool = True) -> Tuple[bool, bool]:
     """
     Check if a file exists and prompt the user for overwrite
     """
-    overwrite = False
+    exists = False
     abort = False
     if file.exists() is True:
         abort = True
-        resp = input(f"The file {file} already exists. Overwrite? [Y/n)")
-        if resp in ["", "Y", "y", "yes"]:
-            overwrite = True
-            abort = False
-    return abort, overwrite
+        exists = True
+        resp: str
+        if default_yes is True:
+            resp = input(f"The file {file} already exists. Overwrite? [Y/n)")
+            if resp in ["", "Y", "y", "yes"]:
+                abort = False
+        else:
+            resp = input(f"The file {file} already exists. Overwrite? [y/N)")
+            if resp in ["Y", "y", "yes"]:
+                abort = False
+    return abort, exists
 
 
 def write_tsmodel(model: FrontendModel, destination_folder: Path, verbose=True):
@@ -33,13 +39,13 @@ def write_tsmodel(model: FrontendModel, destination_folder: Path, verbose=True):
     contract = model.interface()
     filename = destination_folder / "contract.ts"
     # check if file exists
-    abort, overwrite = check_for_file_overwrite(filename)
+    abort, exists = check_for_file_overwrite(filename)
     if abort is True:
         raise CommandError("Aborting")
     if verbose is True:
         print(f"Writing contract in {filename}")
     mode = "x"
-    if overwrite is True:
+    if exists is True:
         mode = "w"
     with open(filename, mode) as f:
         f.write(contract)
@@ -47,13 +53,13 @@ def write_tsmodel(model: FrontendModel, destination_folder: Path, verbose=True):
     tsclass = model.tsclass()
     filename = destination_folder / "index.ts"
     # check if file exists
-    abort, overwrite = check_for_file_overwrite(filename)
+    abort, exists = check_for_file_overwrite(filename)
     if abort is True:
         raise CommandError("Aborting")
     if verbose is True:
         print(f"Writing class {model.model.name} in {filename}")
     mode = "x"
-    if overwrite is True:
+    if exists is True:
         mode = "w"
     with open(filename, mode) as f:
         f.write(tsclass)
