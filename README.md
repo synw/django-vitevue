@@ -100,8 +100,8 @@ class Trade(models.Model):
 Outputs these Typescript models:
 <p>
 
-```
-                     Model Market
+```typescript
+// Model Market
 
 import MarketContract from "./contract";
 
@@ -120,14 +120,14 @@ export default class Market {
 	}
 }
 
--------------- Interface -------------- 
+// -------------- Interface -------------- 
 
 export default interface MarketContract {
 	id: number,
 	name: string,
 }
 
-                     Model Instrument
+// Model Instrument
 
 import InstrumentContract from "./contract";
 
@@ -146,14 +146,14 @@ export default class Instrument {
 	}
 }
 
--------------- Interface -------------- 
+// -------------- Interface -------------- 
 
 export default interface InstrumentContract {
 	id: number,
 	name: string,
 }
 
-                     Model Trade
+// Model Trade
 
 import MarketContract from "../market/contract";
 import InstrumentContract from "../instrument/contract";
@@ -184,7 +184,7 @@ export default class Trade {
 	}
 }
 
--------------- Interface -------------- 
+// -------------- Interface -------------- 
 
 import MarketContract from "../market/contract";
 import InstrumentContract from "../instrument/contract";
