@@ -73,7 +73,7 @@ The `tsmodels` command can generate Typescript models from Django models:
 To write the models to the frontend app:
 
    ```
-  python {project_name}/manage.py tsmodels -w name_of_frontend_dir
+  python {project_name}/manage.py tsmodels my_django_app -w name_of_frontend_dir
    ```
 
 <details>
