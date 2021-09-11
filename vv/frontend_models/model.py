@@ -16,13 +16,6 @@ class FrontendModel:
         self.model = model
 
     @property
-    def get_import(self) -> str:
-        """
-        Get the Typescript import for this model
-        """
-        return f"import {self.model.name} from @/models/{self.snake_case_name}"
-
-    @property
     def contract_import(self) -> str:
         """
         Get the Typescript contract import for this model
@@ -50,7 +43,7 @@ class FrontendModel:
         buf: List[str] = []
         extra_imports: List[str] = []
         buf.append(f"export default interface {self.model.name}Contract " + "{")
-        for field in self.model.fields:
+        for field in self.model.fields.values():
             buf.append(self.field_type(field) + ",")
             if field.is_relation is True:
                 extra_imports.append(
@@ -74,7 +67,7 @@ class FrontendModel:
         buf: List[str] = []
         params: List[str] = []
         main: List[str] = []
-        for field in self.model.fields:
+        for field in self.model.fields.values():
             main.append(f"\t\tthis.{field.name} = {field.name}")
             params.append(f"{field.name}")
         c_begin = "\tconstructor ({ "
@@ -92,7 +85,7 @@ class FrontendModel:
         extra_imports: List[str] = []
         buf: List[str] = [interface + ";\n"]
         buf.append(f"export default class {self.model.name} {'{'}")
-        for field in self.model.fields:
+        for field in self.model.fields.values():
             buf.append(self.field_type(field) + ";")
             if field.is_relation is True:
                 extra_imports.append(
