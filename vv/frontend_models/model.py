@@ -159,6 +159,8 @@ class FrontendModel:
         val = f"{field.related_class_name}Contract"
         if field.classname == "ManyToManyField":
             val = f"Array<{field.related_class_name}Contract>"
+        if field.is_null is True:
+            val += " | null"
         return f"\t{to_camel_case_var(field.name)}: {val}"
 
     def relation_contract_import(
