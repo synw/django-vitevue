@@ -3,7 +3,7 @@ from typing import List
 
 from introspection import ModelRepresentation, ModelFieldRepresentation
 
-from ..utils import field_ts_type_from_classname, to_snake_case
+from ..utils import field_ts_type_from_classname, to_camel_case_var, to_snake_case
 
 
 class FrontendModel:
@@ -156,8 +156,10 @@ class FrontendModel:
         Get the typescript field type definition string
         for a relation field
         """
-        # print(field.related_class_name)
-        return f"\t{field.name}: {field.related_class_name}Contract"
+        val = f"{field.related_class_name}Contract"
+        if field.classname == "ManyToManyField":
+            val = f"Array<{field.related_class_name}Contract>"
+        return f"\t{to_camel_case_var(field.name)}: {val}"
 
     def relation_contract_import(
         self, relation_class_name: str, relation_model_name: str
