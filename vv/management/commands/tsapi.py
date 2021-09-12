@@ -23,7 +23,7 @@ class Command(BaseCommand):
             help="the Django app name to generate api models for",
         )
         parser.add_argument(
-            "-d",
+            "-w",
             nargs="?",
             dest="frontend_dir",
             type=str,

@@ -1,10 +1,7 @@
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 from django.conf import settings
-
-
-VITE_APPS: List[Dict[str, Path]] = getattr(settings, "VITE_APPS", [])
 
 
 def read_settings() -> Tuple[Path, Path, Path]:

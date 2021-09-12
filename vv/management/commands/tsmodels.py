@@ -9,6 +9,7 @@ from introspection.inspector import title, subtitle
 from vv.conf import read_settings
 from vv.frontend_models.model import FrontendModel
 from vv.frontend_models.write import write_tsmodel
+from vv.utils import frontend_app_path
 
 
 class Command(BaseCommand):
@@ -40,7 +41,6 @@ class Command(BaseCommand):
             print("Provide an app to generate models for")
             return
         app_name = options["app"][0]
-        # print(f"Creating frontend models for app {app_name}")
         app = AppInspector(app_name)
         app.get_models()
         for model in app.models:
@@ -52,18 +52,13 @@ class Command(BaseCommand):
                 print("\n" + fm.interface())
             else:
                 VV_BASE_DIR, _, _ = read_settings()
-                app_src = VV_BASE_DIR / options["destination"] / "src"
-                if not app_src.exists():
-                    raise FileNotFoundError(
-                        f"The destination folder {app_src} does not exist"
-                    )
-                # check that a models directory exists in the app
+                app_src = frontend_app_path(VV_BASE_DIR, options["destination"]) / "src"
                 models_dir = app_src / "models"
                 if not models_dir.exists():
                     print("Creating models directory")
                     os.mkdir(models_dir)
                 name = fm.snake_case_name
-                dest_dir = models_dir / f"{name}"
+                dest_dir = models_dir / name
                 if not dest_dir.exists():
                     print(f"Creating directory {name}")
                     os.mkdir(dest_dir)

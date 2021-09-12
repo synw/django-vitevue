@@ -1,10 +1,12 @@
 from pathlib import Path
 from typing import Dict, List
+from vv.utils import read_vite_app_conf, read_vite_apps_conf
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from vv.conf import VITE_APPS, read_settings
+from vv.conf import read_settings
+from vv.utils import frontend_app_path
 from vv.configure import (
     app_dirs,
     check_packages_dependencies,
@@ -44,6 +46,7 @@ class Command(BaseCommand):
         # read conf from settings or try to find a default frontend dir
         print("Reading VITE_APPS config in settings ..")
         apps: List[Dict[str, Path]] = []
+        has_conf, app_conf = read_vite_apps_conf(VV_BASE_DIR)
         if options["app"] is not None:
             # print(f'Generating config for app {options["app"]}')
             app_path = VV_BASE_DIR / options["app"]
@@ -51,15 +54,18 @@ class Command(BaseCommand):
                 raise ValueError(
                     f'The folder {options["app"]} does not exist in {VV_BASE_DIR}'
                 )
-            apps.append(
-                {
-                    "dir": app_path,
-                    "template": TEMPLATES_DIR / "index.html",
-                    "static": STATICFILES_DIR / "frontend",
-                }
-            )
-        elif len(VITE_APPS) == 0:
-            print("No VITE_APPS config found, searching for a frontend folder")
+            # try to find a conf for this app
+            conf = {
+                "dir": app_path,
+                "template": TEMPLATES_DIR / "index.html",
+                "static": STATICFILES_DIR / "frontend",
+            }
+            if options["app"] in app_conf:
+                print(f'Found config for app {options["app"]}')
+                conf = read_vite_app_conf(VV_BASE_DIR, options["app"])
+            apps.append(conf)
+        elif has_conf is False:
+            print("No VITE_APPS config found, searching for a frontend folder...")
             # check if a directory named "frontend" exists
             if Path(VV_BASE_DIR / "frontend").exists():
                 apps.append(
@@ -69,29 +75,38 @@ class Command(BaseCommand):
                         "static": STATICFILES_DIR / "frontend",
                     }
                 )
+            else:
+                print(
+                    (
+                        "No frontend folder found, you might create one in "
+                        f"{VV_BASE_DIR} with a Vite command like:"
+                    )
+                )
+                print("yarn create vite frontend --template=vue-ts")
         else:
-            apps = VITE_APPS
+            apps = list(app_conf.values())
         # compile apps
         static_url = settings.STATIC_URL
         for app in apps:
+            app_dir = frontend_app_path(VV_BASE_DIR, app["dir"])
             viteconf = generate_vite_compilation_config(
-                app["dir"], app["template"], app["static"]
+                app_dir, app["template"], app["static"]
             )
             rel_app_dir, rel_static_dir, rel_template = app_dirs(
-                app["dir"], app["static"], app["template"]
+                app_dir, app["static"], app["template"]
             )
             packages_cmds: Dict[str, str] = generate_packages_json_build_commands(
                 rel_app_dir, rel_static_dir, rel_template, static_url
             )
-            packages_file = app["dir"] / "package.json"
+            packages_file = app_dir / "package.json"
             dev_deps: Dict[str, str] = {}
             if options["write"] is True:
-                write_conf(app["dir"], viteconf)
+                write_conf(app_dir, viteconf)
                 print("Writing package.json")
                 _, dev_deps = packages_conf(packages_file, packages_cmds)
             else:
                 print("-----------------------------------")
-                print(f'Config for app {app["dir"].name}')
+                print(f"Config for app {app_dir.name}")
                 print("-----------------------------------")
                 print(viteconf)
                 print("---- packages.json build commands ----")
