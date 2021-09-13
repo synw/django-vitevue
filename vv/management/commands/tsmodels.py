@@ -1,4 +1,5 @@
 import os
+from vv.conf.manager import VvConfManager
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -6,10 +7,8 @@ from django.conf import settings
 from introspection import AppInspector
 from introspection.inspector import title, subtitle
 
-from vv.conf import read_settings
 from vv.frontend_models.model import FrontendModel
 from vv.frontend_models.write import write_tsmodel
-from vv.utils import frontend_app_path
 
 
 class Command(BaseCommand):
@@ -43,6 +42,8 @@ class Command(BaseCommand):
         app_name = options["app"][0]
         app = AppInspector(app_name)
         app.get_models()
+        # get the settings
+        manager = VvConfManager()
         for model in app.models:
             title(f"Model {model.name}")
             fm = FrontendModel(model)
@@ -51,9 +52,9 @@ class Command(BaseCommand):
                 subtitle("Interface")
                 print("\n" + fm.interface())
             else:
-                VV_BASE_DIR, _, _ = read_settings()
-                app_src = frontend_app_path(VV_BASE_DIR, options["destination"]) / "src"
-                models_dir = app_src / "models"
+                app_path = manager.conf.vv_base_dir / options["destination"]
+                app_conf = manager.frontend_app_conf(app_path)
+                models_dir = app_conf.directory / "src/models"
                 if not models_dir.exists():
                     print("Creating models directory")
                     os.mkdir(models_dir)

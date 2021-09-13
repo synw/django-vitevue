@@ -1,6 +1,7 @@
 import json
 from typing import Dict, List, Set, Tuple
 from pathlib import Path
+from vv.conf.models import VVAppConf, VVConf
 
 from vv.utils import rel_path
 
@@ -20,28 +21,25 @@ def vite_conf_file(path: Path) -> Path:
     raise ValueError(f"No Vite config file found for path {path}")
 
 
-def app_dirs(
-    app_dir: Path, static_dir: Path, template: Path
-) -> Tuple[Path, Path, Path]:
+def rel_app_dirs(conf: VVConf, app: VVAppConf) -> Tuple[Path, Path, Path]:
     """
     Get an app's compilation output dirs
     """
-    base_dir = app_dir.parent
-    # print("Base dir:", base_dir)
-    rel_app_dir = rel_path(app_dir, base_dir)
-    rel_static_dir = rel_path(static_dir, app_dir)
-    rel_template = rel_path(template, app_dir)
+    # print("Base dir:", conf.base_dir)
+    rel_app_dir = rel_path(app.directory, conf.vv_base_dir)
+    rel_static_dir = rel_path(app.static, app.directory)
+    rel_template = rel_path(app.template, app.directory)
+    # print("Base dir", conf.base_dir)
+    # print("Static dir", app.static, rel_static_dir)
     return (rel_app_dir, rel_static_dir, rel_template)
 
 
-def generate_vite_compilation_config(
-    app_dir: Path, template: Path, static_dir: Path
-) -> str:
+def generate_vite_compilation_config(conf: VVConf, app: VVAppConf) -> str:
     """
     Configure Vitejs compilation output dir
     """
-    print(f"Configuring app {app_dir.name} with paths:")
-    rel_app_dir, rel_static_dir, rel_template = app_dirs(app_dir, static_dir, template)
+    print(f"Configuring app {app.directory.name} with paths:")
+    rel_app_dir, rel_static_dir, rel_template = rel_app_dirs(conf, app)
     print(rel_app_dir.name + "/static assets -> ", rel_static_dir)
     print(rel_app_dir.name + "/index.html -> ", rel_template)
     # buf: List[str] = []
@@ -77,15 +75,16 @@ def write_conf(app_dir: Path, viteconf: str, verbose: bool = True) -> None:
 
 
 def generate_packages_json_build_commands(
-    rel_app_dir: Path, rel_static_dir: Path, rel_template: Path, static_url: str
+    conf: VVConf, app: VVAppConf
 ) -> Dict[str, str]:
     """
     Generate the package.json commands for the build
     """
+    rel_app_dir, rel_static_dir, rel_template = rel_app_dirs(conf, app)
     buf: Dict[str, str] = {
         "build:prepare": f"del {rel_static_dir}/assets/* {rel_template} --force"
     }
-    buf["build:build"] = f"vite build --base={static_url}{rel_app_dir.name}/"
+    buf["build:build"] = f"vite build --base={conf.static_url}{rel_app_dir.name}/"
     buf[
         "build:moveindex"
     ] = f"move-file {rel_static_dir}/{rel_template.name} {rel_template}"

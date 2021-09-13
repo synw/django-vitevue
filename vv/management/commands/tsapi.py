@@ -1,15 +1,14 @@
 import os
 from pathlib import Path
 from shutil import copy
+from vv.conf.manager import VvConfManager
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from introspection.inspector.inspector import AppInspector
 
 from vv import files
-from vv.conf import read_settings
 from vv.frontend_models.model import FrontendModel
-from vv.utils import frontend_app_path
 
 
 class Command(BaseCommand):
@@ -36,31 +35,33 @@ class Command(BaseCommand):
         if settings.DEBUG is False:
             print("This command only works in debug mode: do not use in production")
             return
-        VV_BASE_DIR, _, _ = read_settings()
-        app_path = frontend_app_path(VV_BASE_DIR, options["frontend_dir"]) / "src"
-        print("App path:", app_path)
+        # get the settings
+        manager = VvConfManager()
+        p = manager.conf.vv_base_dir / options["frontend_dir"]
+        app = manager.frontend_app_conf(p)
         files_path = Path(os.path.dirname(files.__file__))
-        print("Mod", files_path)
-        api_path = app_path / "api"
-        rel_app_path = app_path.relative_to(VV_BASE_DIR)
+        api_path = app.directory / "src/api"
+        rel_src_path = (app.directory / "src").relative_to(manager.conf.vv_base_dir)
         if api_path.exists() is True:
             print(
                 (
-                    f"The api directory already exists in {rel_app_path}, skipping api "
+                    f"The api directory already exists in {rel_src_path}, skipping api "
                     "files copy"
                 )
             )
         else:
-            print(f"Creating directory {api_path.relative_to(VV_BASE_DIR)}")
+            print(
+                f"Creating directory {api_path.relative_to(manager.conf.vv_base_dir)}"
+            )
             os.mkdir(api_path)
-            print(f"Adding api files in {rel_app_path} ...")
+            print(f"Adding api files in {rel_src_path} ...")
             copy(files_path / "api/model.ts", api_path)
             copy(files_path / "api/interface.ts", api_path)
             copy(files_path / "api/index.ts", api_path)
         # check dirs
-        models_dir = app_path / "models"
+        models_dir = app.directory / "src/models"
         if models_dir.exists() is False:
-            raise FileNotFoundError(f"No models directory in {app_path}")
+            raise FileNotFoundError(f"No models directory in {models_dir}")
         print("Adding api file ...")
         app_name = options["app"][0]
         app = AppInspector(app_name)
