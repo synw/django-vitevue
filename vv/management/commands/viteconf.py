@@ -66,7 +66,7 @@ class Command(BaseCommand):
             return
         # get the settings
         manager = VvConfManager()
-        print("Reading VITE_APPS config in settings ..")
+        print(manager.conf.vv_base_dir, options["frontend_app_dir"])
         app: VVAppConf
         if options["frontend_app_dir"] is not None:
             # print(f'Generating config for app {options["app"]}')
@@ -74,8 +74,8 @@ class Command(BaseCommand):
             if not app_path.exists():
                 raise ValueError(
                     (
-                        f'The folder {options["app"]} does not exist in'
-                        f"{manager.conf.base_dir}"
+                        f'The folder {options["frontend_app_dir"]} does not exist in'
+                        f"{manager.conf.vv_base_dir}"
                     )
                 )
             static: str = app_path.name
