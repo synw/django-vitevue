@@ -26,7 +26,7 @@ If the folder is named *frontend* the command can run without arguments:
 Otherwise add the app folder name as an argument:
 
   ```
-  python {project_name}/manage.py viteconf my_frontend_app_folder_name
+  python {project_name}/manage.py viteconf --app=my_frontend_app_folder_name
   ```
 
 This command will do the following things:
@@ -42,24 +42,25 @@ use the `-w` flag:
   python {project_name}/manage.py viteconf -w
   ```
 
+### Configure templates and static files destination
+
 The npm *build* command will be configured to output to the Django static file
-folder and an *index.html* template. To change these options use the settings
+folder and an *index.html* template. To change these options use these command flags:
 
-## Optional settings
+`--template=mytemplate.html`: the template to compile to. Relative to the django templates dir
+`--static=myfolder`: the static folder to compile assets to. Relative to the first staticfiles dir
 
-Use the *VITE_APPS* setting to configure the compilation destination:
+### Compile to a partial template
 
-  ```python
-  VITE_APPS: List[Dict[str, Path]] = [
-	  {
-		  "dir": settings.BASE_DIR / "frontend",
-		  "template": templates_dir / "mytemplate.html",
-		  "static": static_dir / "frontend",
-	  }
-	]
+By default it will compile a full index page, in single page app mode. It is possible to
+compile to a static partial template, without the html tags. Use the partial flag:
 
-   # the directory containing the frontend and the django project
-   VV_BASE_DIR: Path = BASE_DIR.parent # default if not set
+`-p`: the template will not have html tags and can be included in a parent Django template
+
+To compile an app in partial mode to a specific template and static folder:
+
+  ```
+  python {project_name}/manage.py viteconf -p --app=partialapp --template=mytemplate.html --static=myfolder
   ```
 
 ## Generate Typescript models
@@ -73,7 +74,7 @@ The `tsmodels` command can generate Typescript models from Django models:
 To write the models to the frontend app:
 
    ```
-  python {project_name}/manage.py tsmodels my_django_app -w name_of_frontend_dir
+  python {project_name}/manage.py tsmodels my_django_app -w
    ```
 
 <details>
@@ -115,7 +116,6 @@ export default class Market {
 		this.name=name
 	}
 
-
 	static fromJson(data: Record<string, any>): Market {
 		return new Market(data as MarketContract)
 	}
@@ -140,7 +140,6 @@ export default class Instrument {
 		this.id=id;
 		this.name=name
 	}
-
 
 	static fromJson(data: Record<string, any>): Instrument {
 		return new Instrument(data as InstrumentContract)
@@ -178,7 +177,6 @@ export default class Trade {
 		this.instrument=instrument;
 		this.side=side
 	}
-
 
 	static fromJson(data: Record<string, any>): Trade {
 		return new Trade(data as TradeContract)
