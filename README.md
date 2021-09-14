@@ -23,7 +23,7 @@ The root directory can be configured by a setting. By default it is
 the parent directory of the Django's BASE_DIR. Example setting:
 
   ```
-  VV_BASE_DIR: = Path("/some/directory")
+  VV_BASE_DIR = Path("/some/directory")
   ```
 
 ### Generate the Vitejs config
