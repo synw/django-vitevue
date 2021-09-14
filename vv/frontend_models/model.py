@@ -1,5 +1,5 @@
 # from __future__ import annotations
-from typing import List
+from typing import List, Set
 
 from introspection import ModelRepresentation, ModelFieldRepresentation
 
@@ -41,12 +41,12 @@ class FrontendModel:
         Get a Typescript interface for a model
         """
         buf: List[str] = []
-        extra_imports: List[str] = []
+        extra_imports: Set[str] = set()
         buf.append(f"export default interface {self.model.name}Contract " + "{")
         for field in self.model.fields.values():
             buf.append(self.field_type(field) + ",")
             if field.is_relation is True:
-                extra_imports.append(
+                extra_imports.add(
                     self.relation_contract_import(
                         field.related_class_name,
                         to_snake_case(field.related_class_name),
@@ -82,13 +82,13 @@ class FrontendModel:
         Render a Typescript class for a model
         """
         interface = self.contract_import
-        extra_imports: List[str] = []
+        extra_imports: Set[str] = set()
         buf: List[str] = [interface + ";\n"]
         buf.append(f"export default class {self.model.name} {'{'}")
         for field in self.model.fields.values():
             buf.append(self.field_type(field) + ";")
             if field.is_relation is True:
-                extra_imports.append(
+                extra_imports.add(
                     self.relation_contract_import(
                         field.related_class_name,
                         to_snake_case(field.related_class_name),

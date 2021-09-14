@@ -58,7 +58,7 @@ def generate_vite_compilation_config(
     if is_partial is True:
         buf.append("\t\t\t},")
         buf.append("\t\t\tinput: {")
-        buf.append('\t\t\t\tapp: "app.html"')
+        buf.append(f'\t\t\t\tapp: "{app.template.relative_to(conf.templates_dir)}"')
         buf.append("\t\t\t}")
     else:
         buf.append("\t\t\t}")
