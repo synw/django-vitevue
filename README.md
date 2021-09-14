@@ -10,12 +10,23 @@ commands are available:
 ## Configuration of a Vitejs app
 
 A management command is available to configure some Vitejs frontends compilation options
-and commands. First create a frontend at the root of the Django project with a command
+and commands. First create a frontend in the parent folder of the Django project with a command
 like:
 
   ```
   yarn create vite frontend --template=vue-ts
   ```
+
+### Settings
+
+The root directory can be configured by a setting. By default it is
+the parent directory of the Django's BASE_DIR. Example setting:
+
+  ```
+  VV_BASE_DIR: = Path("/some/directory")
+  ```
+
+### Generate the Vitejs config
 
 If the folder is named *frontend* the command can run without arguments:
 
