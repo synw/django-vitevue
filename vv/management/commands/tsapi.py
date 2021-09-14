@@ -1,13 +1,14 @@
 import os
 from pathlib import Path
 from shutil import copy
-from vv.conf.manager import VvConfManager
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from introspection.inspector.inspector import AppInspector
 
 from vv import files
+from vv.conf.manager import VvConfManager
+from vv.conf.models import VVAppConf
 from vv.frontend_models.model import FrontendModel
 
 
@@ -20,6 +21,15 @@ class Command(BaseCommand):
             nargs="+",
             type=str,
             help="the Django app name to generate api models for",
+        )
+        parser.add_argument(
+            "--app",
+            nargs="?",
+            dest="frontend_app_dir",
+            type=str,
+            default=None,
+            help="the frontend app models to add api to. An api directory "
+            "will be created",
         )
         parser.add_argument(
             "-w",
@@ -36,12 +46,20 @@ class Command(BaseCommand):
             print("This command only works in debug mode: do not use in production")
             return
         # get the settings
+        app_conf: VVAppConf
         manager = VvConfManager()
-        p = manager.conf.vv_base_dir / options["frontend_dir"]
-        app = manager.frontend_app_conf(p)
+        if options["frontend_app_dir"] is None:
+            try:
+                app_conf = manager.frontend_default_conf()
+            except FileNotFoundError as e:
+                raise CommandError(e)
+        else:
+            app_conf = manager.frontend_app_conf(options["frontend_app_dir"])
         files_path = Path(os.path.dirname(files.__file__))
-        api_path = app.directory / "src/api"
-        rel_src_path = (app.directory / "src").relative_to(manager.conf.vv_base_dir)
+        api_path = app_conf.directory / "src/api"
+        rel_src_path = (app_conf.directory / "src").relative_to(
+            manager.conf.vv_base_dir
+        )
         if api_path.exists() is True:
             print(
                 (
@@ -59,7 +77,7 @@ class Command(BaseCommand):
             copy(files_path / "api/interface.ts", api_path)
             copy(files_path / "api/index.ts", api_path)
         # check dirs
-        models_dir = app.directory / "src/models"
+        models_dir = app_conf.directory / "src/models"
         if models_dir.exists() is False:
             raise FileNotFoundError(f"No models directory in {models_dir}")
         print("Adding api file ...")

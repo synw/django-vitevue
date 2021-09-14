@@ -34,14 +34,16 @@ def rel_app_dirs(conf: VVConf, app: VVAppConf) -> Tuple[Path, Path, Path]:
     return (rel_app_dir, rel_static_dir, rel_template)
 
 
-def generate_vite_compilation_config(conf: VVConf, app: VVAppConf) -> str:
+def generate_vite_compilation_config(
+    conf: VVConf, app: VVAppConf, is_partial: bool = False
+) -> str:
     """
     Configure Vitejs compilation output dir
     """
-    print(f"Configuring app {app.directory.name} with paths:")
+    print(f"Configuring app {app.directory.name} with these compilation destinations:")
     rel_app_dir, rel_static_dir, rel_template = rel_app_dirs(conf, app)
-    print(rel_app_dir.name + "/static assets -> ", rel_static_dir)
-    print(rel_app_dir.name + "/index.html -> ", rel_template)
+    print("static assets -> ", rel_static_dir)
+    print("template -> ", rel_template)
     # buf: List[str] = []
     buf: List[str] = [f'\tpublicDir: "{rel_static_dir}",']
     buf.append("\tbuild: {")
@@ -53,7 +55,13 @@ def generate_vite_compilation_config(conf: VVConf, app: VVAppConf) -> str:
     # buf.append(f'\t\t\tchunkFileNames: "{app_name}/[name]-[hash].js"')
     # buf.append(f'\t\t\tentryFileNames: "{app_name}/[name].js"')
     # buf.append(f'\t\t\tassetFileNames: "{app_name}/[name]-[hash][extname]"')
-    buf.append("\t\t\t}")
+    if is_partial is True:
+        buf.append("\t\t\t},")
+        buf.append("\t\t\tinput: {")
+        buf.append('\t\t\t\tapp: "app.html"')
+        buf.append("\t\t\t}")
+    else:
+        buf.append("\t\t\t}")
     buf.append("\t\t}")
     buf.append("\t}")
     return "\n".join(buf)

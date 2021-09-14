@@ -1,9 +1,8 @@
-from pathlib import Path
 from typing import Dict, List
 from vv.conf.models import VVAppConf
 
 from django.conf import settings
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 
 from vv.conf import VvConfManager
 from vv.configure import (
@@ -20,6 +19,14 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            "--app",
+            nargs="?",
+            dest="frontend_app_dir",
+            type=str,
+            default=None,
+            help="Generate a config for the specified frontend app folder",
+        )
+        parser.add_argument(
             "-w",
             action="store_true",
             dest="write",
@@ -27,11 +34,27 @@ class Command(BaseCommand):
             help="Write to the Vite config files, print the config if not set",
         )
         parser.add_argument(
-            "app",
+            "-p",
+            action="store_true",
+            dest="is_partial",
+            default=False,
+            help="Compile to a partial template",
+        )
+        parser.add_argument(
+            "--template",
+            nargs="?",
+            dest="template",
+            type=str,
+            default=None,
+            help="The template to compile to",
+        )
+        parser.add_argument(
+            "--static",
             type=str,
             nargs="?",
+            dest="static",
             default=None,
-            help="Generate a config for the specified folder, ignoring settings if set",
+            help="The static folder to compile to",
         )
 
     def handle(self, *args, **options):
@@ -43,9 +66,9 @@ class Command(BaseCommand):
         manager = VvConfManager()
         print("Reading VITE_APPS config in settings ..")
         apps: List[VVAppConf] = []
-        if options["app"] is not None:
+        if options["frontend_app_dir"] is not None:
             # print(f'Generating config for app {options["app"]}')
-            app_path = manager.conf.vv_base_dir / options["app"]
+            app_path = manager.conf.vv_base_dir / options["frontend_app_dir"]
             if not app_path.exists():
                 raise ValueError(
                     (
@@ -53,29 +76,50 @@ class Command(BaseCommand):
                         f"{manager.conf.base_dir}"
                     )
                 )
-            app_conf = manager.frontend_app_conf(app_path)
+            static: str = app_path.name
+            if options["static"] is not None:
+                static = options["static"]
+            template: str = "index.html"
+            if options["template"] is not None:
+                template = options["template"]
+            else:
+                if options["is_partial"] is True:
+                    template = app_path.name + ".html"
+            app_conf = manager.frontend_app_conf(
+                app_path.name,
+                template_path=template,
+                static_path=static,
+                is_partial=options["is_partial"],
+            )
             apps.append(app_conf)
-        elif manager.has_conf is False:
+        else:
             print(
-                "No VITE_APPS config found, searching for default a frontend folder..."
+                "No frontend app dir given, searching for default a frontend folder..."
             )
             # check if a directory named "frontend" exists
-            path = Path(manager.conf.vv_base_dir / "frontend")
-            if path.exists():
-                apps.append(manager.frontend_app_conf(path))
-            else:
-                print(
-                    (
-                        "No frontend folder found, you might create one in "
-                        f"{manager.conf.base_dir} with a Vite command like:"
-                    )
+            try:
+
+                template: str = "index.html"
+                if options["template"] is not None:
+                    template = options["template"]
+                else:
+                    if options["is_partial"] is True:
+                        template = "frontend.html"
+                app = manager.frontend_default_conf(
+                    template_path=template, is_partial=options["is_partial"]
                 )
-                print("yarn create vite frontend --template=vue-ts")
-        else:
-            apps = list(manager.conf.apps.values())
+                static: str = app.directory.name
+                if options["static"] is not None:
+                    static = options["static"]
+                apps.append(app)
+            except FileNotFoundError as e:
+                raise CommandError(e)
         # compile apps
         for app in apps:
-            viteconf = generate_vite_compilation_config(manager.conf, app)
+            # print(f"App {app.directory.name} conf:", app)
+            viteconf = generate_vite_compilation_config(
+                manager.conf, app, options["is_partial"]
+            )
             packages_cmds: Dict[str, str] = generate_packages_json_build_commands(
                 manager.conf, app
             )

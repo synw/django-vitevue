@@ -12,7 +12,6 @@ class VvConfManager:
     A class to manage vv config
     """
 
-    has_conf: bool = False
     conf: VVConf
 
     def __init__(self) -> None:
@@ -38,14 +37,33 @@ class VvConfManager:
             templates_dir=TEMPLATES_DIR,
             static_url=STATIC_URL,
         )
-        if hasattr(settings, "VITE_APPS") is True:
-            self.has_conf = True
-            for app_conf in settings.VITE_APPS:
-                ac = self.read_app_conf(app_conf)
-                self.conf.apps[ac.directory.name] = ac
         return self.conf
 
-    def frontend_app_conf(self, path: Path) -> VVAppConf:
+    def frontend_default_conf(
+        self,
+        template_path: str = "",
+        static_path: str = "",
+        is_partial: bool = False,
+    ):
+        path = Path(self.conf.vv_base_dir / "frontend")
+        if not path.exists():
+            msg = (
+                "No frontend folder found, you might create one in "
+                f"{self.conf.base_dir} with a Vite command like:"
+                "yarn create vite frontend --template=vue-ts"
+            )
+            raise FileNotFoundError(msg)
+        return self.frontend_app_conf(
+            "frontend", template_path, static_path, is_partial
+        )
+
+    def frontend_app_conf(
+        self,
+        dir_path: str,
+        template_path: str = "",
+        static_path: str = "",
+        is_partial: bool = False,
+    ) -> VVAppConf:
         """Get a frontend app conf from a path. If the app exists
         in VITE_APPS return it's conf or generate a default conf
         for this path
@@ -56,36 +74,35 @@ class VvConfManager:
         :return: a vv app conf
         :rtype: VVAppConf
         """
-        if path.exists() is False:
-            raise FileNotFoundError(f"frontend app path {path} not found")
-        default_app_conf: Dict[str, Path] = {
-            "directory": self.conf.vv_base_dir / path.name,
-            "static": self.conf.staticfiles_dir / path.name,
+        app_dir = self.conf.vv_base_dir / dir_path
+        if app_dir.exists() is False:
+            raise FileNotFoundError(f"frontend app path {app_dir} not found")
+        app_conf: Dict[str, Path] = {
+            "directory": app_dir,
+            "static": self.conf.staticfiles_dir / app_dir.name,
             "template": self.conf.templates_dir / "index.html",
         }
-        app_name = path.name
-        if app_name in self.conf.apps:
-            return self.conf.apps[app_name]
-        return VVAppConf(**default_app_conf)
+        if template_path != "":
+            app_conf["template"] = self.conf.templates_dir / template_path
+        if static_path != "":
+            app_conf["static"] = self.conf.staticfiles_dir / static_path
+        return VVAppConf(**app_conf, is_partial=is_partial)
 
-    def read_app_conf(self, app_conf: Dict[str, Union[str, Path, bool]]) -> VVAppConf:
+    def read_app_conf(self, app_conf: Dict[str, Union[Path, bool]]) -> VVAppConf:
         """Read an app conf from a VITE_APPS setting
 
         :param app_conf: [description]
-        :type app_conf: Dict[str, Union[str, Path, bool]]
+        :type app_conf: VVAppConf
         :return: [description]
         :rtype: VVAppConf
         """
         is_partial: bool = False
         params: Dict[str, Path] = {}
         for param in app_conf:
-            p: Path
             if param == "is_partial":
                 is_partial = bool(app_conf[param])
             else:
-                if isinstance(app_conf[param], str):
-                    p = Path(str(app_conf[param]))
-                params[param] = p
+                params[param] = app_conf[param]  # type: ignore
         return VVAppConf(**params, is_partial=is_partial)
 
     def read_settings(self) -> Tuple[Path, Path, Path, Path, str]:

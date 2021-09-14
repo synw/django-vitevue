@@ -1,7 +1,6 @@
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict
 
 
 @dataclass(frozen=True)
@@ -29,8 +28,6 @@ class VVConf:
     staticfiles_dir: Path
     templates_dir: Path
     static_url: str
-    # apps
-    apps: Dict[str, VVAppConf] = field(default_factory=dict)
 
     def to_json_str(self) -> str:
         """Generate an indented json string representation
