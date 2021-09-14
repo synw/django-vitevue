@@ -1,0 +1,2 @@
+class VVTest:
+    pass
