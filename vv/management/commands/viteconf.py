@@ -1,16 +1,18 @@
-from typing import Dict, List
-from vv.conf.models import VVAppConf
+from pathlib import Path
+from typing import Dict
 
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
+from introspection.colors import colors
 
 from vv.conf import VvConfManager
+from vv.conf.models import VVAppConf
 from vv.configure import (
     check_packages_dependencies,
-    generate_vite_compilation_config,
-    write_conf,
     generate_packages_json_build_commands,
+    generate_vite_compilation_config,
     packages_conf,
+    write_conf,
 )
 
 
@@ -65,7 +67,7 @@ class Command(BaseCommand):
         # get the settings
         manager = VvConfManager()
         print("Reading VITE_APPS config in settings ..")
-        apps: List[VVAppConf] = []
+        app: VVAppConf
         if options["frontend_app_dir"] is not None:
             # print(f'Generating config for app {options["app"]}')
             app_path = manager.conf.vv_base_dir / options["frontend_app_dir"]
@@ -91,7 +93,7 @@ class Command(BaseCommand):
                 static_path=static,
                 is_partial=options["is_partial"],
             )
-            apps.append(app_conf)
+            app = app_conf
         else:
             print(
                 "No frontend app dir given, searching for default a frontend folder..."
@@ -111,34 +113,75 @@ class Command(BaseCommand):
                 static: str = app.directory.name
                 if options["static"] is not None:
                     static = options["static"]
-                apps.append(app)
             except FileNotFoundError as e:
                 raise CommandError(e)
-        # compile apps
-        for app in apps:
-            # print(f"App {app.directory.name} conf:", app)
-            viteconf = generate_vite_compilation_config(
-                manager.conf, app, options["is_partial"]
+        # print(f"App {app.directory.name} conf:", app)
+        missing_template = False
+        partial_template_front: Path
+        if options["is_partial"] is True:
+            # verify the existence of the partial template in the frontend app
+            partial_template_relative = app.template.relative_to(
+                manager.conf.templates_dir
             )
-            packages_cmds: Dict[str, str] = generate_packages_json_build_commands(
-                manager.conf, app
+            partial_template_front = app.directory / partial_template_relative
+            if partial_template_front.exists() is False:
+                missing_template = True
+        # generate conf
+        viteconf = generate_vite_compilation_config(
+            manager.conf, app, options["is_partial"]
+        )
+        packages_cmds: Dict[str, str] = generate_packages_json_build_commands(
+            manager.conf, app
+        )
+        packages_file = app.directory / "package.json"
+        dev_deps: Dict[str, str] = {}
+        if options["write"] is True:
+            write_conf(app.directory, viteconf)
+            print("Writing package.json")
+            _, dev_deps = packages_conf(packages_file, packages_cmds)
+        else:
+            print("-----------------------------------")
+            print(f"Config for app {app.directory.name}")
+            print("-----------------------------------")
+            print(viteconf)
+            print("---- packages.json build commands ----")
+            for cmd_line in packages_cmds:
+                print(f"{cmd_line} : {packages_cmds[cmd_line]}")
+            _, dev_deps = packages_conf(packages_file, packages_cmds, read_only=True)
+        # checking dev dependencies
+        check_packages_dependencies(dev_deps)
+        # print warnings
+        if missing_template is True:
+            warn_msg = (
+                f"The {partial_template_front} file does not exist and "  # type: ignore
+                "is required for compilation of partial template."
             )
-            packages_file = app.directory / "package.json"
-            dev_deps: Dict[str, str] = {}
-            if options["write"] is True:
-                write_conf(app.directory, viteconf)
-                print("Writing package.json")
-                _, dev_deps = packages_conf(packages_file, packages_cmds)
-            else:
-                print("-----------------------------------")
-                print(f"Config for app {app.directory.name}")
-                print("-----------------------------------")
-                print(viteconf)
-                print("---- packages.json build commands ----")
-                for cmd_line in packages_cmds:
-                    print(f"{cmd_line} : {packages_cmds[cmd_line]}")
-                _, dev_deps = packages_conf(
-                    packages_file, packages_cmds, read_only=True
+            print(colors.yellow("warning"), warn_msg)
+            resp = input(
+                (
+                    f"Create the {partial_template_front} "  # type: ignore
+                    "template? [Y/n)"
                 )
-            # checking dev dependencies
-            check_packages_dependencies(dev_deps)
+            )
+            create = False
+            if resp in ["", "Y", "y", "yes"]:
+                create = True
+            if create is False:
+                msg = (
+                    "You can create it with this content:\n"
+                    '<div id="app"></div>\n'
+                    '<script type="module" src="/src/main.ts"></script>'
+                )
+                print(msg)
+                return
+            else:
+                with open(partial_template_front, "x") as f:  # type: ignore
+                    content = (
+                        '<div id="app"></div>\n'
+                        '<script type="module" src="/src/main.ts"></script>'
+                    )
+                    f.write(content)
+                    print(
+                        colors.green("ok"),
+                        f"{partial_template_front} written",  # type: ignore
+                    )
