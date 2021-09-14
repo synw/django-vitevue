@@ -4,7 +4,7 @@ settings.py
 .project
 .pydevproject
 .settings
-
+coverage_html_report
 __pycache__/
 *.py[cod]
 
