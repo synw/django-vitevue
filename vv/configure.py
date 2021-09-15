@@ -130,7 +130,7 @@ def check_packages_dependencies(packages: Dict[str, str]):
     Check if the npm dependencies required for compilation
     are installed in package.json
     """
-    required = {"del-cli", "npm-run-all", "move-file-cli"}
+    required: Set[str] = {"del-cli", "npm-run-all", "move-file-cli"}
     if not required.issubset(packages):
         print("Some npm dev dependencies are missing and require to be installed:")
         missing: Set[str] = set()
