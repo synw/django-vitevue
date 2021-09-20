@@ -10,35 +10,45 @@ class FrontendModel:
     model: ModelRepresentation
 
     def __init__(self, model: ModelRepresentation) -> None:
-        """
-        Initialize from a model representation
+        """Initialize from a model representation
+
+        :param model: a model representation from django-introspection
+        :type model: ModelRepresentation
         """
         self.model = model
 
     @property
     def contract_import(self) -> str:
-        """
-        Get the Typescript contract import for this model
+        """Get the Typescript contract import for this model
+
+        :return: a Typescript import string
+        :rtype: str
         """
         return f'import {self.model.name}Contract from "./contract"'
 
     @property
     def api_relative_import(self) -> str:
-        """
-        Get the Typescript api import
+        """Get the Typescript api import
+
+        :return: a Typescript import string
+        :rtype: str
         """
         return 'import api from "../../api"'
 
     @property
     def snake_case_name(self) -> str:
-        """
-        Convert the model name to snake case
+        """Convert the model name to snake case
+
+        :return: the model name in snake case
+        :rtype: str
         """
         return to_snake_case(self.model.name)
 
     def interface(self) -> str:
-        """
-        Get a Typescript interface for a model
+        """Get a Typescript interface for a model
+
+        :return: the Typescript interface for the model
+        :rtype: str
         """
         buf: List[str] = []
         extra_imports: Set[str] = set()
