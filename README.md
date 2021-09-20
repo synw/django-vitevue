@@ -7,6 +7,31 @@ commands are available:
 - [tsmodels](#generate-typescript-models): generate Typescript models from Django models
 - [tsapi](#add-an-api-to-the-generated-frontend-models): scaffold an api for the generated frontend models
 
+## Install
+
+   ```
+   pip install django-vitevue
+   ```
+
+Add `"vv",` to `INSTALLED_APPS`
+
+Make sure these basic Django settings are present:
+
+   ```python
+TEMPLATES = [
+    {
+        "DIRS": [BASE_DIR / "templates"],
+        # ...
+    },
+]
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
+STATIC_URL = "/static/"
+   ```
+
 ## Configuration of a Vitejs app
 
 A management command is available to configure some Vitejs frontends compilation options
@@ -248,7 +273,7 @@ export default class Market {
 Create a project directory and initialize a Django project with *static* and *templates* folders:
 
   ```
-  pip install django django-vv
+  pip install django django-vitevue
   mkdir my_project
   cd my_project
   django-admin createproject my_project
