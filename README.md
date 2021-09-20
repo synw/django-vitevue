@@ -68,7 +68,7 @@ compile to a static partial template, without the html tags. Use the partial fla
 
 `-p`: the template will not have html tags and can be included in a parent Django template
 
-To compile an app in partial mode to a specific template and static folder:
+To configure Vitejs to compile an app in partial mode to a specific template and static folder:
 
   ```
   python {project_name}/manage.py viteconf -p --app=partialapp --template=mytemplate.html --static=myfolder
@@ -237,7 +237,7 @@ export default class Market {
 }
 ```
 
-<p>The command will create an api directory containing an helper class: https://github.com/synw/django-vitevue-example/blob/main/frontend/src/api/model.ts</p>
+<p>The command will create an api directory containing an helper class: https://github.com/synw/django-vitevue/blob/master/vv/files/api/model.ts</p>
 
 </details>
 
@@ -248,6 +248,7 @@ export default class Market {
 Create a project directory and initialize a Django project with *static* and *templates* folders:
 
   ```
+  pip install django django-vv
   mkdir my_project
   cd my_project
   django-admin createproject my_project
