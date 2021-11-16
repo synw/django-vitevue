@@ -75,7 +75,10 @@ def write_conf(app_dir: Path, viteconf: str, verbose: bool = True) -> None:
     if verbose is True:
         print(f"Writing config in {filename.name}")
     lines = open(filename, "r").readlines()
-    new_pre_last_line = lines[-2].rstrip() + ",\n"
+    new_pre_last_line = lines[-2].rstrip()
+    if not new_pre_last_line.endswith(","):
+        new_pre_last_line = new_pre_last_line + ","
+    new_pre_last_line = new_pre_last_line + "\n"
     new_last_line = lines[-1].rstrip().replace("})", viteconf + "\n})")
     lines[-2] = new_pre_last_line
     lines[-1] = new_last_line
