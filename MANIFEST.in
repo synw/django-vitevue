@@ -1,5 +1,10 @@
+recursive-exclude tests *
+recursive-exclude testapp *
+recursive-exclude sandbox *
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+
 recursive-include vv/conf *
 recursive-include vv/files *
 recursive-include vv/frontend_models *
 recursive-include vv/management *
-recursive-include vv/tests *
