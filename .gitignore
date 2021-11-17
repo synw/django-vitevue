@@ -7,6 +7,8 @@ settings.py
 coverage_html_report
 __pycache__/
 *.py[cod]
+.venv
+.vscode
 
 # C extensions
 *.so
