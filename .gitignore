@@ -9,6 +9,7 @@ __pycache__/
 *.py[cod]
 .venv
 .vscode
+.pytest_cache
 
 # C extensions
 *.so
