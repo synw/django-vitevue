@@ -371,7 +371,7 @@ Example repository: https://github.com/synw/django-vitevue-example
 
 ## Run the tests
 
-Clone then cd in the django-introspection directory and run:
+Clone and run:
 
 ```
 make install
