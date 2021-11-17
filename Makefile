@@ -172,7 +172,7 @@ pycheck:
 	@echo "==== Running pycheck on package ===="
 	@echo ""
 	pycheck
-.PHONY: check-release
+.PHONY: pycheck
 
 quality: test-initial check-release pycheck
 .PHONY: quality
