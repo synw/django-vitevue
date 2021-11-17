@@ -144,14 +144,14 @@ freeze-dependencies:
 	$(VENV_PATH)/bin/python freezer.py
 .PHONY: freeze-dependencies
 
-build-package:
+build:
 	@echo ""
 	@echo "==== Build package ===="
 	@echo ""
 	rm -rf build *.egg-info
 	rm -Rf dist
 	$(VENV_PATH)/bin/python setup.py sdist
-.PHONY: build-package
+.PHONY: build
 
 release:
 	@echo ""
