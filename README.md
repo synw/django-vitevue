@@ -368,3 +368,18 @@ Run the server:
    ```
 
 Example repository: https://github.com/synw/django-vitevue-example
+
+## Run the tests
+
+Clone then cd in the django-introspection directory and run:
+
+```
+make install
+make test-initial
+```
+
+To run the code quality checker install [Pycheck](https://github.com/emencia/pycheck) and run:
+
+```
+make quality
+```
