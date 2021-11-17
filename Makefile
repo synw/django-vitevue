@@ -167,8 +167,12 @@ check-release:
 	$(TWINE) check dist/*
 .PHONY: check-release
 
-quality: test-initial flake freeze-dependencies check-release
+pycheck:
 	@echo ""
-	@echo "♥ ♥ Everything should be fine ♥ ♥"
+	@echo "==== Running pycheck on package ===="
 	@echo ""
+	pycheck
+.PHONY: check-release
+
+quality: test-initial check-release pycheck
 .PHONY: quality
