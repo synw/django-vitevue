@@ -5,7 +5,7 @@ branch = True
 [report]
 omit =
     vv/migrations/*
-    vv/tests*
+    tests*
     vv/__init__.py
 
 # Regexes for lines to exclude from consideration

@@ -1,3 +1,4 @@
+# pyright: reportUnknownVariableType=false
 from django.db import models
 
 SIDE = [("buy", "buy"), ("sell", "sell")]
@@ -7,7 +8,7 @@ class Agent(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.name
+        return self.name  # type: ignore
 
 
 class Market(models.Model):
@@ -18,14 +19,14 @@ class Market(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.name
+        return self.name  # type: ignore
 
 
 class Instrument(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return self.name
+        return self.name  # type: ignore
 
 
 class Trade(models.Model):
