@@ -66,7 +66,7 @@ class Command(BaseCommand):
             return
         # get the settings
         manager = VvConfManager()
-        print(manager.conf.vv_base_dir, options["frontend_app_dir"])
+        # print(manager.conf.vv_base_dir, options["frontend_app_dir"])
         app: VVAppConf
         if options["frontend_app_dir"] is not None:
             # print(f'Generating config for app {options["app"]}')
@@ -99,22 +99,21 @@ class Command(BaseCommand):
                 "No frontend app dir given, searching for default a frontend folder..."
             )
             # check if a directory named "frontend" exists
-            try:
-
-                template: str = "index.html"
-                if options["template"] is not None:
-                    template = options["template"]
-                else:
-                    if options["is_partial"] is True:
-                        template = "frontend.html"
-                app = manager.frontend_default_conf(
-                    template_path=template, is_partial=options["is_partial"]
-                )
-                static: str = app.directory.name
-                if options["static"] is not None:
-                    static = options["static"]
-            except FileNotFoundError as e:
-                raise CommandError(e)
+            app_path = manager.conf.vv_base_dir / "frontend"
+            if not app_path.exists():
+                raise CommandError("No frontend directory found")
+            template: str = "index.html"
+            if options["template"] is not None:
+                template = options["template"]
+            else:
+                if options["is_partial"] is True:
+                    template = "frontend.html"
+            app = manager.frontend_default_conf(
+                template_path=template, is_partial=options["is_partial"]
+            )
+            static: str = app.directory.name
+            if options["static"] is not None:
+                static = options["static"]
         # print(f"App {app.directory.name} conf:", app)
         missing_template = False
         partial_template_front: Path
