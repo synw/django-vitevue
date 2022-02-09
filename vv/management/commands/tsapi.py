@@ -31,14 +31,6 @@ class Command(BaseCommand):
             help="the frontend app models to add api to. An api directory "
             "will be created",
         )
-        parser.add_argument(
-            "-w",
-            nargs="?",
-            dest="frontend_dir",
-            type=str,
-            default=None,
-            help="the frontend folder to add api to models",
-        )
 
     def handle(self, *args, **options):
         # verbosity = options["verbosity"]
@@ -80,8 +72,8 @@ class Command(BaseCommand):
         # check dirs
         models_dir = app_conf.directory / "src/models"
         if models_dir.exists() is False:
-            raise FileNotFoundError(f"No models directory in {models_dir}")
-        print("Adding api file ...")
+            print(f"No models directory {models_dir} found, exiting")
+            return
         app_name = options["app"][0]
         app = AppInspector(app_name)
         app.get_models()
