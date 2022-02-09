@@ -1,8 +1,5 @@
-import Api from "./model";
+import Api from "./api";
 
-const api = new Api({
-  serverUrl: "http://localhost:8000",
-  verbose: true
-});
+const api = new Api("http://localhost:8000");
 
 export default api;

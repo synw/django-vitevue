@@ -73,9 +73,10 @@ class Command(BaseCommand):
             )
             os.mkdir(api_path)
             print(f"Adding api files in {rel_src_path} ...")
-            copy(files_path / "api/model.ts", api_path)
-            copy(files_path / "api/interface.ts", api_path)
+            # copy(files_path / "api/model.ts", api_path)
+            # copy(files_path / "api/interface.ts", api_path)
             copy(files_path / "api/index.ts", api_path)
+            copy(files_path / "api/api.ts", api_path)
         # check dirs
         models_dir = app_conf.directory / "src/models"
         if models_dir.exists() is False:

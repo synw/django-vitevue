@@ -20,32 +20,24 @@ export default class Api extends ApiX.default {
     return false;
   }
 
-  async login(username: string, password: string, autoLogOut = false): Promise<Record<string, any>> {
-    let url = this.serverUrl + "/auth/login/";
+  async login(username: string, password: string, url = "/vv/auth/login/"): Promise<boolean> {
+    let _url = this.serverUrl + url;
     const payload = {
       username: username,
       password: password,
     }
     const opts = this.postHeader(payload);
-    const response = await fetch(url, opts);
+    const response = await fetch(_url, opts);
     if (!response.ok) {
-      if (autoLogOut) {
-        //console.log("Autologout", response.status)
-        if (response.status === 403) {
-          throw new Error(`${response}`);
-        }
-      }
-      //console.log("Django login RESP NOT OK", response);
-      throw new Error(response.toString());
+      return false
     }
-    const data = await response.json() as Record<string, any>;
-    return data;
+    return true
   }
 
-  async logout() {
-    const uri = this.serverUrl + "/auth/logout/";
+  async logout(url = "/vv/auth/logout/") {
+    const _url = this.serverUrl + url;
     //console.log("Logout", uri)
-    const response = await fetch(uri, this.header("get"));
+    const response = await fetch(_url, this.header("get"));
     if (!response.ok) {
       throw new Error(`Server logout failed ${response}`);
     }
