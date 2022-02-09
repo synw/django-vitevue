@@ -33,7 +33,7 @@ help:
 	@echo "  quality             -- to launch Flake8 checking and every tests suites"
 	@echo
 	@echo "  check-release       -- to check package release before uploading it to PyPi"
-	@echo "  release             -- to release package for latest version on PyPi (once release has been pushed to repository)"
+	@echo "  publish             -- to release package for latest version on PyPi (once release has been pushed to repository)"
 	@echo
 
 clean-pycache:
@@ -153,12 +153,12 @@ build:
 	$(VENV_PATH)/bin/python setup.py sdist
 .PHONY: build
 
-release:
+publish:
 	@echo ""
 	@echo "==== Release ===="
 	@echo ""
 	$(TWINE) upload dist/*
-.PHONY: release
+.PHONY: publish
 
 check-release:
 	@echo ""
