@@ -90,3 +90,6 @@ class Command(BaseCommand):
             )
             lines[-1] = new_last_line
             open(filename, "w").writelines(lines)
+        print("Install the dependencies in the frontend:")
+        print("yarn add js-cookie @snowind/api")
+        print("or npm install js-cookie @snowind/api")
