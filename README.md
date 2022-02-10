@@ -2,12 +2,12 @@
 
 [![pub package](https://img.shields.io/pypi/v/django-vitevue)](https://pypi.org/project/django-vitevue/)
 
-Manage Vitejs frontends and compile them to Django static files and templates. Some management
-commands are available:
+Manage Vitejs frontends and compile them to Django static files and templates. Features
 
-- [viteconf](#configuration-of-a-vitejs-app): generate a Vitejs compilation configuration
-- [tsmodels](#generate-typescript-models): generate Typescript models from Django models
-- [tsapi](#add-an-api-to-the-generated-frontend-models): scaffold an api for the generated frontend models
+- [Configure Vitejs for Django](#configuration-of-a-vitejs-app-to-compile-to-django-templates-and-static-files): use a management
+command to help configuring Vitejs to compile to Django templates and static files
+- [Typescript scaffolding](#typescript-models): generate Typescript models from existing Django models
+- [Api and views](#add-an-api-to-the-generated-frontend-models): api helper frontend class configured for Django and login/logout views with single page app support
 
 ## Install
 
@@ -17,54 +17,49 @@ commands are available:
 
 Add `"vv",` to `INSTALLED_APPS`
 
-Make sure these basic Django settings are present:
+Make sure the basic Django template and static dirs settings are present. Run the 
+`vvcheck` management command to see if the config is ok
 
-   ```python
-TEMPLATES = [
-    {
-        "DIRS": [BASE_DIR / "templates"],
-        # ...
-    },
-]
+## Configuration of a Vitejs app to compile to Django templates and static files
 
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+### Architecture and settings
 
-STATIC_URL = "/static/"
-   ```
+The recommended file structure for a single page app is:
 
-## Configuration of a Vitejs app
+- project_root_dir
+	- django_project
+ 	- vite_project
 
 A management command is available to configure some Vitejs frontends compilation options
 and commands. First create a frontend in the parent folder of the Django project with a command
 like:
 
-  ```
+  ```bash
   yarn create vite frontend --template=vue-ts
   ```
 
-### Settings
+Or use and existing one. 
 
 The root directory can be configured by a setting. By default it is
-the parent directory of the Django's BASE_DIR. Example setting:
+the parent directory of the Django's `BASE_DIR`, like in the file structure shown above. 
+Example setting to put the frontend dev code directly in the django project directory:
 
-  ```
-  VV_BASE_DIR = Path("/some/directory")
+  ```python
+  VV_BASE_DIR = BASE_DIR
   ```
 
 ### Generate the Vitejs config
 
-If the folder is named *frontend* the command can run without arguments:
+If the Vite app project folder is named *frontend* the command can run without arguments:
 
   ```
-  python {project_name}/manage.py viteconf
+  python {django_project}/manage.py viteconf
   ```
 
 Otherwise add the app folder name as an argument:
 
   ```
-  python {project_name}/manage.py viteconf --app=my_frontend_app_folder_name
+  python {django_project}/manage.py viteconf --app=my_frontend_app_folder_name
   ```
 
 This command will do the following things:
@@ -77,10 +72,12 @@ The command runs in dry mode and outputs the config. To write to config files
 use the `-w` flag:
 
   ```
-  python {project_name}/manage.py viteconf -w
+  python {django_project}/manage.py viteconf -w
   ```
 
-### Configure templates and static files destination
+### Options
+
+#### Configure templates and static files destination
 
 The npm *build* command will be configured to output to the Django static file
 folder and an *index.html* template. To change these options use these command flags:
@@ -88,7 +85,13 @@ folder and an *index.html* template. To change these options use these command f
 `--template=mytemplate.html`: the template to compile to. Relative to the django templates dir
 `--static=myfolder`: the static folder to compile assets to. Relative to the first staticfiles dir
 
-### Compile to a partial template
+Example to compile the template to `templates/myapp/mytemplate.html` and the static assets to `static/myapp`:
+
+  ```
+  python {django_project}/manage.py viteconf --template=myapp/mytemplate.html --static=myapp
+  ```
+
+#### Compile to a partial template
 
 By default it will compile a full index page, in single page app mode. It is possible to
 compile to a static partial template, without the html tags. Use the partial flag:
@@ -98,21 +101,23 @@ compile to a static partial template, without the html tags. Use the partial fla
 To configure Vitejs to compile an app in partial mode to a specific template and static folder:
 
   ```
-  python {project_name}/manage.py viteconf -p --app=partialapp --template=mytemplate.html --static=myfolder
+  python {django_project}/manage.py viteconf -p --app=partialapp --template=mytemplate.html --static=myfolder
   ```
 
-## Generate Typescript models
+## Typescript models
+
+### Generate Typescript models from Django models
 
 The `tsmodels` command can generate Typescript models from Django models:
 
    ```
-  python {project_name}/manage.py tsmodels my_django_app
+  python {django_project}/manage.py tsmodels my_django_app
    ```
 
 To write the models to the frontend app:
 
    ```
-  python {project_name}/manage.py tsmodels my_django_app -w
+  python {django_project}/manage.py tsmodels my_django_app -w
    ```
 
 <details>
@@ -240,13 +245,16 @@ export default interface TradeContract {
 </p>
 </details>  
 
-## Add an api to the generated frontend models
+### Add an api to the generated frontend models
 
 To scaffold an api for an existing frontend model:
 
   ```
-  python {project_name}/manage.py tsapi my_django_app_name
+  python {django_project}/manage.py tsapi my_django_app_name
   ```
+
+This will create an api for the Typescript models and copy an `api` helper
+in the frontend `src` directory
 
 <details>
 <summary>Example output</summary>
@@ -264,9 +272,22 @@ export default class Market {
 }
 ```
 
-<p>The command will create an api directory containing an helper class: https://github.com/synw/django-vitevue/blob/master/vv/files/api/model.ts</p>
-
 </details>
+
+### Login views
+
+Some login/logout views are available from the backend, and supported by the frontend
+api helper class. Add the urls in `urls.py`:
+
+```
+urlpatterns = [
+    path("vv/", include("vv.urls")),
+		#...
+]
+```
+
+Two api views will be available: `/vv/auth/login/` and `/vv/auth/logout/`. The frontend api
+helper class have support for these views [example code](https://github.com/synw/django-vitevue-example/blob/main/django_vitevue_example/static/demo/App.vue)
 
 ## Example
 
