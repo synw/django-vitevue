@@ -1,6 +1,5 @@
 VENV_PATH=.venv
 PYTHON_INTERPRETER=python3
-PYTHON_BIN=$(VENV_PATH)/bin/python
 PIP=$(VENV_PATH)/bin/pip
 TWINE=$(VENV_PATH)/bin/twine
 DJANGO_MANAGE=$(VENV_PATH)/bin/python sandbox/manage.py
@@ -16,8 +15,6 @@ help:
 	@echo "Please use \`make <target>' where <target> is one of"
 	@echo
 	@echo "  install             -- to install this project with virtualenv and Pip"
-	@echo "  freeze-dependencies -- to write a frozen.txt file with installed dependencies versions"
-	@echo
 	@echo "  clean               -- to clean EVERYTHING (Warning)"
 	@echo "  clean-var           -- to clean data (uploaded medias, database, etc..)"
 	@echo "  clean-install       -- to clean Python side installation"
@@ -136,13 +133,6 @@ test-initial:
 	$(PYTEST) -vv --reuse-db --create-db tests/
 	rm -Rf var/media-tests/
 .PHONY: test-initial
-
-freeze-dependencies:
-	@echo ""
-	@echo "==== Freeze dependencies versions ===="
-	@echo ""
-	$(VENV_PATH)/bin/python freezer.py
-.PHONY: freeze-dependencies
 
 build:
 	@echo ""
