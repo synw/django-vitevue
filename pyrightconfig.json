@@ -13,5 +13,5 @@
   "reportUnknownParameterType": false,
   "reportUnknownVariableType": false,
   "reportUnnecessaryCast": "warning",
-  "reportUnnecessaryComparison": "warning",
+  "reportUnnecessaryComparison": "warning"
 }
